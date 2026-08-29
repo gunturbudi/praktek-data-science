@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<scheme version="2.0" title="Week 4 — Inference and A/B testing" description="Distributions by group, sieve/mosaic for association, and a t-test via Python Script.">
+	<nodes>
+		<node id="0" name="File" qualified_name="Orange.widgets.data.owfile.OWFile" project_name="Orange3" version="" title="File: ab_test.tab" position="(60.0, 200.0)" />
+		<node id="1" name="Distributions" qualified_name="Orange.widgets.visualize.owdistributions.OWDistributions" project_name="Orange3" version="" title="Distributions" position="(240.0, 110.0)" />
+		<node id="2" name="Box Plot" qualified_name="Orange.widgets.visualize.owboxplot.OWBoxPlot" project_name="Orange3" version="" title="Box Plot" position="(240.0, 200.0)" />
+		<node id="3" name="Sieve Diagram" qualified_name="Orange.widgets.visualize.owsieve.OWSieveDiagram" project_name="Orange3" version="" title="Sieve Diagram" position="(240.0, 290.0)" />
+		<node id="4" name="Mosaic Display" qualified_name="Orange.widgets.visualize.owmosaic.OWMosaicDisplay" project_name="Orange3" version="" title="Mosaic Display" position="(430.0, 290.0)" />
+		<node id="5" name="Python Script" qualified_name="Orange.widgets.data.owpythonscript.OWPythonScript" project_name="Orange3" version="" title="Python Script: t-test" position="(430.0, 110.0)" />
+		<node id="6" name="Data Table" qualified_name="Orange.widgets.data.owtable.OWTable" project_name="Orange3" version="" title="Test output" position="(620.0, 110.0)" />
+	</nodes>
+	<links>
+		<link id="0" source_node_id="0" sink_node_id="1" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="1" source_node_id="0" sink_node_id="2" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="2" source_node_id="0" sink_node_id="3" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="3" source_node_id="0" sink_node_id="4" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="4" source_node_id="0" sink_node_id="5" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="5" source_node_id="5" sink_node_id="6" enabled="true" source_channel="Data" sink_channel="Data" />
+	</links>
+	<annotations>
+		<text id="0" type="text/plain" rect="(20.0, 20.0, 560.0, 82.0)" font-family="Helvetica" font-size="13">PRAKTIKUM 4 — Inference
+
+Orange is a visual tool, not a statistics package. It shows association clearly
+(Sieve, Mosaic, Distributions) and defers the formal test to the Python Script.</text>
+		<text id="1" type="text/plain" rect="(620.0, 200.0, 340.0, 210.0)" font-family="Helvetica" font-size="13">WHAT TO DO
+1. Distributions: 'converted', split by 'variant'.
+   Eyeball the difference -- is it convincing?
+2. Box Plot: 'session_seconds' by 'variant'. Orange
+   prints a t-test at the bottom of this widget.
+3. Sieve Diagram: variant x converted. The colour
+   shows the deviation from independence.
+4. SIMPSON CHECK: Mosaic with variant, converted
+   AND device. Does the lift hold in both devices?
+5. Python Script: paste the snippet from the book
+   (section 4.8.2) to get z, p and the CI.</text>
+	</annotations>
+	<thumbnail />
+	<node_properties>
+		<properties node_id="0" format="pickle">gAJ9cQAoWAsAAABfX3ZlcnNpb25fX3EBSwFYDAAAAHJlY2VudF9wYXRoc3ECXXEDY29yYW5nZXdpZGdldC51dGlscy5maWxlZGlhbG9ncwpSZWNlbnRQYXRoCnEEKYFxBX1xBihYBwAAAGFic3BhdGhxB1hIAAAAQzovVXNlcnMvR3VudHVyL0RvY3VtZW50cy9OR0FKQVIvREFUQSBTQ0lFTkNFL3ByYWN0aWN1bS9kYXRhL2FiX3Rlc3QudGFicQhYBgAAAHByZWZpeHEJWAcAAABiYXNlZGlycQpYBwAAAHJlbHBhdGhxC1gQAAAAZGF0YS9hYl90ZXN0LnRhYnEMWAUAAAB0aXRsZXENWAAAAABxDlgFAAAAc2hlZXRxD2gOWAsAAABmaWxlX2Zvcm1hdHEQTnViYVgLAAAAcmVjZW50X3VybHNxEV1xElgGAAAAc291cmNlcRNLAFgLAAAAc2hlZXRfbmFtZXNxFH1xFVgDAAAAdXJscRZoDlgJAAAAdmFyaWFibGVzcRddcRhYEgAAAGNvbnRyb2xBcmVhVmlzaWJsZXEZiFgTAAAAc2F2ZWRXaWRnZXRHZW9tZXRyeXEaTnUu</properties>
+		<properties node_id="1" format="literal">{}</properties>
+		<properties node_id="2" format="literal">{}</properties>
+		<properties node_id="3" format="literal">{}</properties>
+		<properties node_id="4" format="literal">{}</properties>
+		<properties node_id="5" format="pickle">gAJ9cQAoWAsAAABfX3ZlcnNpb25fX3EBSwJYEgAAAGN1cnJlbnRTY3JpcHRJbmRleHECSwBYDQAAAHNjcmlwdExpYnJhcnlxA11xBH1xBShYBAAAAG5hbWVxBlgIAAAAQS9CIHRlc3RxB1gGAAAAc2NyaXB0cQhYeAsAACMgV2VlayA0IOKAlCB0aGUgZm9ybWFsIHRlc3QgT3JhbmdlIGRvZXMgbm90IGRvIGZvciB5b3UuCiMKIyBUaGlzIHNjcmlwdCBpcyBlbWJlZGRlZCBpbnRvIHRoZSBQeXRob24gU2NyaXB0IHdpZGdldCBvZgojIHdlZWswNF9pbmZlcmVuY2Uub3dzLiBJdCBhbHNvIHJ1bnMgc3RhbmRhbG9uZToKIwojICAgICBweXRob24gc2NyaXB0cy9hYl90ZXN0LnB5CiMKIyBJbnNpZGUgT3JhbmdlLCBgaW5fZGF0YWAgaXMgc3VwcGxpZWQgYnkgdGhlIHdpZGdldC4gU3RhbmRhbG9uZSwgd2UgbG9hZCB0aGUKIyB0YWJsZSBvdXJzZWx2ZXMuCmltcG9ydCBudW1weSBhcyBucApmcm9tIHNjaXB5IGltcG9ydCBzdGF0cwpmcm9tIE9yYW5nZS5kYXRhIGltcG9ydCBUYWJsZQoKdHJ5OgogICAgaW5fZGF0YSAgICAgICAgICAjIHByb3ZpZGVkIGJ5IHRoZSBQeXRob24gU2NyaXB0IHdpZGdldApleGNlcHQgTmFtZUVycm9yOiAgICAjIHJ1bm5pbmcgc3RhbmRhbG9uZQogICAgZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCiAgICBpbl9kYXRhID0gVGFibGUoc3RyKFBhdGgoX19maWxlX18pLnBhcmVudC5wYXJlbnQucGFyZW50IC8gImRhdGEiIC8gImFiX3Rlc3QudGFiIikpCgpWQVJJQU5UID0gInZhcmlhbnQiClRBUkdFVCA9ICJjb252ZXJ0ZWQiCgoKZGVmIGNvbHVtbih0YWJsZSwgbmFtZSk6CiAgICAiIiJSZXR1cm4gYSBjb2x1bW4gYnkgbmFtZSBhcyBhIGxpc3Qgb2Ygc3RyaW5ncywgd2hlcmV2ZXIgaXQgbGl2ZXMuIiIiCiAgICBkb21haW4gPSB0YWJsZS5kb21haW4KICAgIGZvciBzb3VyY2UsIHZhcl9saXN0IGluICgodGFibGUuWCwgZG9tYWluLmF0dHJpYnV0ZXMpLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICh0YWJsZS5ZLnJlc2hhcGUoLTEsIDEpLCBbZG9tYWluLmNsYXNzX3Zhcl0pLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICh0YWJsZS5tZXRhcywgZG9tYWluLm1ldGFzKSk6CiAgICAgICAgZm9yIGksIHZhciBpbiBlbnVtZXJhdGUodmFyX2xpc3QpOgogICAgICAgICAgICBpZiB2YXIgaXMgbm90IE5vbmUgYW5kIHZhci5uYW1lID09IG5hbWU6CiAgICAgICAgICAgICAgICBjb2wgPSBzb3VyY2VbOiwgaV0KICAgICAgICAgICAgICAgIGlmIHZhci5pc19kaXNjcmV0ZToKICAgICAgICAgICAgICAgICAgICByZXR1cm4gW3Zhci52YWx1ZXNbaW50KHYpXSBmb3IgdiBpbiBjb2xdCiAgICAgICAgICAgICAgICByZXR1cm4gY29sCiAgICByYWlzZSBLZXlFcnJvcihuYW1lKQoKCnZhcmlhbnQgPSBucC5hcnJheShjb2x1bW4oaW5fZGF0YSwgVkFSSUFOVCkpCmNvbnZlcnRlZCA9IG5wLmFycmF5KGNvbHVtbihpbl9kYXRhLCBUQVJHRVQpKQoKYXJtcyA9IHNvcnRlZChzZXQodmFyaWFudCkpCnBvc2l0aXZlID0gc29ydGVkKHNldChjb252ZXJ0ZWQpKVstMV0gICAgICAgICMgIjEiIG9yICJ5ZXMiCgpuID0gbnAuYXJyYXkoWyh2YXJpYW50ID09IGEpLnN1bSgpIGZvciBhIGluIGFybXNdLCBkdHlwZT1mbG9hdCkKY29udiA9IG5wLmFycmF5KFsoKHZhcmlhbnQgPT0gYSkgJiAoY29udmVydGVkID09IHBvc2l0aXZlKSkuc3VtKCkKICAgICAgICAgICAgICAgICBmb3IgYSBpbiBhcm1zXSwgZHR5cGU9ZmxvYXQpCnJhdGUgPSBjb252IC8gbgoKIyAtLS0tIHNhbXBsZSByYXRpbyBjaGVjazogZG8gdGhpcyBCRUZPUkUgdHJ1c3RpbmcgYW55dGhpbmcgZWxzZSAtLS0tLS0tLS0tCl8sIHBfc3JtID0gc3RhdHMuY2hpc3F1YXJlKG4pCgojIC0tLS0gdHdvLXByb3BvcnRpb24geiB0ZXN0IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpwb29sID0gY29udi5zdW0oKSAvIG4uc3VtKCkKc2VfcG9vbCA9IG5wLnNxcnQocG9vbCAqICgxIC0gcG9vbCkgKiAoMSAvIG5bMF0gKyAxIC8gblsxXSkpCnogPSAocmF0ZVsxXSAtIHJhdGVbMF0pIC8gc2VfcG9vbApwID0gMiAqICgxIC0gc3RhdHMubm9ybS5jZGYoYWJzKHopKSkKCnNlX3VucG9vbGVkID0gbnAuc3FydChyYXRlWzBdICogKDEgLSByYXRlWzBdKSAvIG5bMF0KICAgICAgICAgICAgICAgICAgICAgICsgcmF0ZVsxXSAqICgxIC0gcmF0ZVsxXSkgLyBuWzFdKQpkaWZmID0gcmF0ZVsxXSAtIHJhdGVbMF0KbG8sIGhpID0gZGlmZiAtIDEuOTYgKiBzZV91bnBvb2xlZCwgZGlmZiArIDEuOTYgKiBzZV91bnBvb2xlZAoKcHJpbnQoIkEvQiBURVNUIFJFU1VMVCIpCnByaW50KCI9IiAqIDQ4KQpwcmludCgiICBzYW1wbGUgcmF0aW8gY2hlY2s6IHAgPSB7Oi4zZn0gIHt9Ii5mb3JtYXQoCiAgICBwX3NybSwgIk9LIiBpZiBwX3NybSA+IDAuMDEgZWxzZSAiQlJPS0VOIC0gc3RvcCBoZXJlIikpCnByaW50KCIiKQpmb3IgYXJtLCByLCBuaSBpbiB6aXAoYXJtcywgcmF0ZSwgbik6CiAgICBwcmludCgiICBhcm0ge306IHs6LjQlfSAgIChuID0gezosfSkiLmZvcm1hdChhcm0sIHIsIGludChuaSkpKQpwcmludCgiIikKcHJpbnQoIiAgYWJzb2x1dGUgbGlmdCB7OisuNCV9Ii5mb3JtYXQoZGlmZikpCnByaW50KCIgIDk1JSBDSSAgICAgICAgW3s6Ky40JX0sIHs6Ky40JX1dIi5mb3JtYXQobG8sIGhpKSkKcHJpbnQoIiAgcmVsYXRpdmUgbGlmdCB7OisuMiV9Ii5mb3JtYXQoZGlmZiAvIHJhdGVbMF0pKQpwcmludCgiICB6ID0gezouM2Z9LCAgcCA9IHs6LjZmfSIuZm9ybWF0KHosIHApKQpwcmludCgiIikKcHJpbnQoIiAgIiArICgiUkVKRUNUIHRoZSBudWxsOiB0aGUgdHdvIGFybXMgZGlmZmVyLiIKICAgICAgICAgICAgICBpZiBwIDwgMC4wNSBlbHNlICJDYW5ub3QgcmVqZWN0IHRoZSBudWxsLiIpKQpwcmludCgiIikKcHJpbnQoIiAgTm93IGNoZWNrIHRoZSBzYW1lIHNwbGl0IGJ5IGRldmljZSAoTW9zYWljIERpc3BsYXkpLiIpCnByaW50KCIgIERvZXMgdGhlIGxpZnQgaG9sZCBpbiBCT1RIIGRldmljZXMsIG9yIGlzIGl0IFNpbXBzb24ncyBwYXJhZG94PyIpCgpvdXRfZGF0YSA9IGluX2RhdGEKcQlYCAAAAGZpbGVuYW1lcQpOdWFYCgAAAHNjcmlwdFRleHRxC2gJWA0AAABzcGxpdHRlclN0YXRlcQxOWA4AAAB2aW1Nb2RlRW5hYmxlZHENiVgSAAAAY29udHJvbEFyZWFWaXNpYmxlcQ6IWBMAAABzYXZlZFdpZGdldEdlb21ldHJ5cQ9OdS4=</properties>
+		<properties node_id="6" format="literal">{}</properties>
+	</node_properties>
+</scheme>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<scheme version="2.0" title="Week 7 — Classification: a fair comparison" description="Five learners on identical folds, with ROC, lift and a confusion matrix.">
+	<nodes>
+		<node id="0" name="File" qualified_name="Orange.widgets.data.owfile.OWFile" project_name="Orange3" version="" title="File: credit.tab" position="(60.0, 300.0)" />
+		<node id="1" name="Constant" qualified_name="Orange.widgets.model.owconstant.OWConstant" project_name="Orange3" version="" title="Constant (baseline)" position="(260.0, 90.0)" />
+		<node id="2" name="Logistic Regression" qualified_name="Orange.widgets.model.owlogisticregression.OWLogisticRegression" project_name="Orange3" version="" title="Logistic Regression" position="(260.0, 165.0)" />
+		<node id="3" name="Tree" qualified_name="Orange.widgets.model.owtree.OWTreeLearner" project_name="Orange3" version="" title="Tree" position="(260.0, 240.0)" />
+		<node id="4" name="Naive Bayes" qualified_name="Orange.widgets.model.ownaivebayes.OWNaiveBayes" project_name="Orange3" version="" title="Naive Bayes" position="(260.0, 315.0)" />
+		<node id="5" name="kNN" qualified_name="Orange.widgets.model.owknn.OWKNNLearner" project_name="Orange3" version="" title="kNN" position="(260.0, 390.0)" />
+		<node id="6" name="SVM" qualified_name="Orange.widgets.model.owsvm.OWSVM" project_name="Orange3" version="" title="SVM" position="(260.0, 465.0)" />
+		<node id="7" name="Test and Score" qualified_name="Orange.widgets.evaluate.owtestandscore.OWTestAndScore" project_name="Orange3" version="" title="Test and Score" position="(500.0, 280.0)" />
+		<node id="8" name="Confusion Matrix" qualified_name="Orange.widgets.evaluate.owconfusionmatrix.OWConfusionMatrix" project_name="Orange3" version="" title="Confusion Matrix" position="(700.0, 170.0)" />
+		<node id="9" name="ROC Analysis" qualified_name="Orange.widgets.evaluate.owrocanalysis.OWROCAnalysis" project_name="Orange3" version="" title="ROC Analysis" position="(700.0, 260.0)" />
+		<node id="10" name="Lift Curve" qualified_name="Orange.widgets.evaluate.owliftcurve.OWLiftCurve" project_name="Orange3" version="" title="Lift Curve" position="(700.0, 350.0)" />
+		<node id="11" name="Calibration Plot" qualified_name="Orange.widgets.evaluate.owcalibrationplot.OWCalibrationPlot" project_name="Orange3" version="" title="Calibration Plot" position="(700.0, 440.0)" />
+		<node id="12" name="Tree Viewer" qualified_name="Orange.widgets.visualize.owtreeviewer.OWTreeGraph" project_name="Orange3" version="" title="Tree Viewer" position="(500.0, 500.0)" />
+		<node id="13" name="Data Table" qualified_name="Orange.widgets.data.owtable.OWTable" project_name="Orange3" version="" title="Misclassified rows" position="(890.0, 170.0)" />
+	</nodes>
+	<links>
+		<link id="0" source_node_id="0" sink_node_id="1" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="1" source_node_id="1" sink_node_id="7" enabled="true" source_channel="Learner" sink_channel="Learner" />
+		<link id="2" source_node_id="0" sink_node_id="2" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="3" source_node_id="2" sink_node_id="7" enabled="true" source_channel="Learner" sink_channel="Learner" />
+		<link id="4" source_node_id="0" sink_node_id="3" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="5" source_node_id="3" sink_node_id="7" enabled="true" source_channel="Learner" sink_channel="Learner" />
+		<link id="6" source_node_id="0" sink_node_id="4" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="7" source_node_id="4" sink_node_id="7" enabled="true" source_channel="Learner" sink_channel="Learner" />
+		<link id="8" source_node_id="0" sink_node_id="5" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="9" source_node_id="5" sink_node_id="7" enabled="true" source_channel="Learner" sink_channel="Learner" />
+		<link id="10" source_node_id="0" sink_node_id="6" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="11" source_node_id="6" sink_node_id="7" enabled="true" source_channel="Learner" sink_channel="Learner" />
+		<link id="12" source_node_id="0" sink_node_id="7" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="13" source_node_id="7" sink_node_id="8" enabled="true" source_channel="Evaluation Results" sink_channel="Evaluation Results" />
+		<link id="14" source_node_id="7" sink_node_id="9" enabled="true" source_channel="Evaluation Results" sink_channel="Evaluation Results" />
+		<link id="15" source_node_id="7" sink_node_id="10" enabled="true" source_channel="Evaluation Results" sink_channel="Evaluation Results" />
+		<link id="16" source_node_id="7" sink_node_id="11" enabled="true" source_channel="Evaluation Results" sink_channel="Evaluation Results" />
+		<link id="17" source_node_id="3" sink_node_id="12" enabled="true" source_channel="Model" sink_channel="Tree" />
+		<link id="18" source_node_id="8" sink_node_id="13" enabled="true" source_channel="Selected Data" sink_channel="Data" />
+	</links>
+	<annotations>
+		<text id="0" type="text/plain" rect="(20.0, 20.0, 620.0, 96.0)" font-family="Helvetica" font-size="13">PRAKTIKUM 7 — Classification
+
+THE POINT OF THIS WORKFLOW: every learner meets Test and Score on the SAME
+folds with the SAME preprocessing. That is what makes the comparison fair.
+Constant is the do-nothing baseline -- if a model cannot beat it, it has learned nothing.</text>
+		<text id="1" type="text/plain" rect="(890.0, 260.0, 340.0, 270.0)" font-family="Helvetica" font-size="13">WHAT TO DO
+1. Test and Score: 'Cross validation, 5 folds'.
+   Sort by AUC. Does every model beat Constant?
+2. Set Target class = 'yes' (the minority class).
+   Watch precision and recall change completely.
+3. Confusion Matrix: select the FALSE NEGATIVE cell
+   and look at those rows in the Data Table.
+   What do the missed defaulters have in common?
+4. Tree Viewer: set depth to 3. Can you read the
+   rules aloud? That is why trees survive in
+   regulated domains.
+5. Calibration Plot: compare Naive Bayes with
+   Logistic Regression. NB hugs the extremes --
+   its probabilities are not trustworthy.
+
+UTS PREP: be able to explain every number here.</text>
+	</annotations>
+	<thumbnail />
+	<node_properties>
+		<properties node_id="0" format="pickle">gAJ9cQAoWAsAAABfX3ZlcnNpb25fX3EBSwFYDAAAAHJlY2VudF9wYXRoc3ECXXEDY29yYW5nZXdpZGdldC51dGlscy5maWxlZGlhbG9ncwpSZWNlbnRQYXRoCnEEKYFxBX1xBihYBwAAAGFic3BhdGhxB1hHAAAAQzovVXNlcnMvR3VudHVyL0RvY3VtZW50cy9OR0FKQVIvREFUQSBTQ0lFTkNFL3ByYWN0aWN1bS9kYXRhL2NyZWRpdC50YWJxCFgGAAAAcHJlZml4cQlYBwAAAGJhc2VkaXJxClgHAAAAcmVscGF0aHELWA8AAABkYXRhL2NyZWRpdC50YWJxDFgFAAAAdGl0bGVxDVgAAAAAcQ5YBQAAAHNoZWV0cQ9oDlgLAAAAZmlsZV9mb3JtYXRxEE51YmFYCwAAAHJlY2VudF91cmxzcRFdcRJYBgAAAHNvdXJjZXETSwBYCwAAAHNoZWV0X25hbWVzcRR9cRVYAwAAAHVybHEWaA5YCQAAAHZhcmlhYmxlc3EXXXEYWBIAAABjb250cm9sQXJlYVZpc2libGVxGYhYEwAAAHNhdmVkV2lkZ2V0R2VvbWV0cnlxGk51Lg==</properties>
+		<properties node_id="1" format="literal">{}</properties>
+		<properties node_id="2" format="literal">{}</properties>
+		<properties node_id="3" format="literal">{}</properties>
+		<properties node_id="4" format="literal">{}</properties>
+		<properties node_id="5" format="literal">{}</properties>
+		<properties node_id="6" format="literal">{}</properties>
+		<properties node_id="7" format="literal">{}</properties>
+		<properties node_id="8" format="literal">{}</properties>
+		<properties node_id="9" format="literal">{}</properties>
+		<properties node_id="10" format="literal">{}</properties>
+		<properties node_id="11" format="literal">{}</properties>
+		<properties node_id="12" format="literal">{}</properties>
+		<properties node_id="13" format="literal">{}</properties>
+	</node_properties>
+</scheme>

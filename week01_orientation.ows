@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<scheme version="2.0" title="Week 1 — Orientation: the Orange canvas" description="Load a dataset, look at it, and meet the widget/channel idea.">
+	<nodes>
+		<node id="0" name="File" qualified_name="Orange.widgets.data.owfile.OWFile" project_name="Orange3" version="" title="File: credit.csv" position="(60.0, 180.0)" />
+		<node id="1" name="Data Table" qualified_name="Orange.widgets.data.owtable.OWTable" project_name="Orange3" version="" title="Data Table" position="(250.0, 120.0)" />
+		<node id="2" name="Feature Statistics" qualified_name="Orange.widgets.data.owfeaturestatistics.OWFeatureStatistics" project_name="Orange3" version="" title="Feature Statistics" position="(250.0, 210.0)" />
+		<node id="3" name="Distributions" qualified_name="Orange.widgets.visualize.owdistributions.OWDistributions" project_name="Orange3" version="" title="Distributions" position="(250.0, 300.0)" />
+	</nodes>
+	<links>
+		<link id="0" source_node_id="0" sink_node_id="1" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="1" source_node_id="0" sink_node_id="2" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="2" source_node_id="0" sink_node_id="3" enabled="true" source_channel="Data" sink_channel="Data" />
+	</links>
+	<annotations>
+		<text id="0" type="text/plain" rect="(20.0, 20.0, 470.0, 96.0)" font-family="Helvetica" font-size="13">PRAKTIKUM 1 — Foundations
+
+Widgets communicate over CHANNELS. Double-click a link to see which channel it uses.
+Start at File, then follow the arrows. Every widget updates the moment its input changes.</text>
+		<text id="1" type="text/plain" rect="(440.0, 110.0, 330.0, 128.0)" font-family="Helvetica" font-size="13">WHAT TO DO
+1. Open Data Table. How many rows and columns?
+2. Open Feature Statistics. Which column has the most
+   missing values? Which are identifiers?
+3. Open Distributions and set the variable to 'default'.
+   What is the base rate? Remember it for week 7.</text>
+	</annotations>
+	<thumbnail />
+	<node_properties>
+		<properties node_id="0" format="pickle">gAJ9cQAoWAsAAABfX3ZlcnNpb25fX3EBSwFYDAAAAHJlY2VudF9wYXRoc3ECXXEDY29yYW5nZXdpZGdldC51dGlscy5maWxlZGlhbG9ncwpSZWNlbnRQYXRoCnEEKYFxBX1xBihYBwAAAGFic3BhdGhxB1hHAAAAQzovVXNlcnMvR3VudHVyL0RvY3VtZW50cy9OR0FKQVIvREFUQSBTQ0lFTkNFL3ByYWN0aWN1bS9kYXRhL2NyZWRpdC5jc3ZxCFgGAAAAcHJlZml4cQlYBwAAAGJhc2VkaXJxClgHAAAAcmVscGF0aHELWA8AAABkYXRhL2NyZWRpdC5jc3ZxDFgFAAAAdGl0bGVxDVgAAAAAcQ5YBQAAAHNoZWV0cQ9oDlgLAAAAZmlsZV9mb3JtYXRxEE51YmFYCwAAAHJlY2VudF91cmxzcRFdcRJYBgAAAHNvdXJjZXETSwBYCwAAAHNoZWV0X25hbWVzcRR9cRVYAwAAAHVybHEWaA5YCQAAAHZhcmlhYmxlc3EXXXEYWBIAAABjb250cm9sQXJlYVZpc2libGVxGYhYEwAAAHNhdmVkV2lkZ2V0R2VvbWV0cnlxGk51Lg==</properties>
+		<properties node_id="1" format="literal">{}</properties>
+		<properties node_id="2" format="literal">{}</properties>
+		<properties node_id="3" format="literal">{}</properties>
+	</node_properties>
+</scheme>

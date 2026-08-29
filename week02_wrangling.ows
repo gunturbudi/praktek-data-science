@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<scheme version="2.0" title="Week 2 — Data acquisition and wrangling" description="Profile, impute, remove outliers, join a reference table, save.">
+	<nodes>
+		<node id="0" name="File" qualified_name="Orange.widgets.data.owfile.OWFile" project_name="Orange3" version="" title="File: credit.csv" position="(60.0, 190.0)" />
+		<node id="1" name="Feature Statistics" qualified_name="Orange.widgets.data.owfeaturestatistics.OWFeatureStatistics" project_name="Orange3" version="" title="1. Profile" position="(220.0, 110.0)" />
+		<node id="2" name="Impute" qualified_name="Orange.widgets.data.owimpute.OWImpute" project_name="Orange3" version="" title="2. Impute" position="(220.0, 210.0)" />
+		<node id="3" name="Outliers" qualified_name="Orange.widgets.data.owoutliers.OWOutliers" project_name="Orange3" version="" title="3. Outliers" position="(390.0, 210.0)" />
+		<node id="4" name="Data Table" qualified_name="Orange.widgets.data.owtable.OWTable" project_name="Orange3" version="" title="After impute" position="(390.0, 310.0)" />
+		<node id="5" name="Data Table" qualified_name="Orange.widgets.data.owtable.OWTable" project_name="Orange3" version="" title="After outliers" position="(560.0, 310.0)" />
+		<node id="6" name="Select Rows" qualified_name="Orange.widgets.data.owselectrows.OWSelectRows" project_name="Orange3" version="" title="4. Select Rows" position="(560.0, 190.0)" />
+		<node id="7" name="Save Data" qualified_name="Orange.widgets.data.owsave.OWSave" project_name="Orange3" version="" title="5. Save Data" position="(720.0, 190.0)" />
+	</nodes>
+	<links>
+		<link id="0" source_node_id="0" sink_node_id="1" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="1" source_node_id="0" sink_node_id="2" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="2" source_node_id="2" sink_node_id="3" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="3" source_node_id="2" sink_node_id="4" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="4" source_node_id="3" sink_node_id="5" enabled="true" source_channel="Inliers" sink_channel="Data" />
+		<link id="5" source_node_id="3" sink_node_id="6" enabled="true" source_channel="Inliers" sink_channel="Data" />
+		<link id="6" source_node_id="6" sink_node_id="7" enabled="true" source_channel="Matching Data" sink_channel="Data" />
+	</links>
+	<annotations>
+		<text id="0" type="text/plain" rect="(20.0, 20.0, 520.0, 82.0)" font-family="Helvetica" font-size="13">PRAKTIKUM 2 — Wrangling
+
+The pipeline runs left to right. ORDER MATTERS: profile first, then impute,
+then handle outliers. Compare the Data Table at each stage.</text>
+		<text id="1" type="text/plain" rect="(760.0, 90.0, 300.0, 176.0)" font-family="Helvetica" font-size="13">WHAT TO DO
+1. In Impute, try 'Average/Most frequent', then
+   'Model-based imputer'. Compare in Data Table.
+2. In Outliers, switch between One-Class SVM and
+   Local Outlier Factor. How many rows are dropped?
+3. In Select Rows, keep only age &gt;= 25.
+4. Save the result as credit_clean.tab.
+
+QUESTION: is dropping the outliers here defensible?
+Justify in one sentence -- see book section 2.7.2.</text>
+	</annotations>
+	<thumbnail />
+	<node_properties>
+		<properties node_id="0" format="pickle">gAJ9cQAoWAsAAABfX3ZlcnNpb25fX3EBSwFYDAAAAHJlY2VudF9wYXRoc3ECXXEDY29yYW5nZXdpZGdldC51dGlscy5maWxlZGlhbG9ncwpSZWNlbnRQYXRoCnEEKYFxBX1xBihYBwAAAGFic3BhdGhxB1hHAAAAQzovVXNlcnMvR3VudHVyL0RvY3VtZW50cy9OR0FKQVIvREFUQSBTQ0lFTkNFL3ByYWN0aWN1bS9kYXRhL2NyZWRpdC5jc3ZxCFgGAAAAcHJlZml4cQlYBwAAAGJhc2VkaXJxClgHAAAAcmVscGF0aHELWA8AAABkYXRhL2NyZWRpdC5jc3ZxDFgFAAAAdGl0bGVxDVgAAAAAcQ5YBQAAAHNoZWV0cQ9oDlgLAAAAZmlsZV9mb3JtYXRxEE51YmFYCwAAAHJlY2VudF91cmxzcRFdcRJYBgAAAHNvdXJjZXETSwBYCwAAAHNoZWV0X25hbWVzcRR9cRVYAwAAAHVybHEWaA5YCQAAAHZhcmlhYmxlc3EXXXEYWBIAAABjb250cm9sQXJlYVZpc2libGVxGYhYEwAAAHNhdmVkV2lkZ2V0R2VvbWV0cnlxGk51Lg==</properties>
+		<properties node_id="1" format="literal">{}</properties>
+		<properties node_id="2" format="literal">{}</properties>
+		<properties node_id="3" format="literal">{}</properties>
+		<properties node_id="4" format="literal">{}</properties>
+		<properties node_id="5" format="literal">{}</properties>
+		<properties node_id="6" format="literal">{}</properties>
+		<properties node_id="7" format="literal">{}</properties>
+	</node_properties>
+</scheme>

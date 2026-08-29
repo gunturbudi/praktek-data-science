@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<scheme version="2.0" title="Week 3 — Exploratory data analysis" description="Distributions, correlations, scatter plots, and a Simpson reversal.">
+	<nodes>
+		<node id="0" name="File" qualified_name="Orange.widgets.data.owfile.OWFile" project_name="Orange3" version="" title="File: rumah_yogya.tab" position="(60.0, 200.0)" />
+		<node id="1" name="Distributions" qualified_name="Orange.widgets.visualize.owdistributions.OWDistributions" project_name="Orange3" version="" title="Distributions" position="(240.0, 100.0)" />
+		<node id="2" name="Correlations" qualified_name="Orange.widgets.data.owcorrelations.OWCorrelations" project_name="Orange3" version="" title="Correlations" position="(240.0, 200.0)" />
+		<node id="3" name="Scatter Plot" qualified_name="Orange.widgets.visualize.owscatterplot.OWScatterPlot" project_name="Orange3" version="" title="Scatter Plot" position="(430.0, 200.0)" />
+		<node id="4" name="Box Plot" qualified_name="Orange.widgets.visualize.owboxplot.OWBoxPlot" project_name="Orange3" version="" title="Box Plot" position="(240.0, 300.0)" />
+		<node id="5" name="Heat Map" qualified_name="Orange.widgets.visualize.owheatmap.OWHeatMap" project_name="Orange3" version="" title="Heat Map" position="(430.0, 320.0)" />
+		<node id="6" name="Feature Statistics" qualified_name="Orange.widgets.data.owfeaturestatistics.OWFeatureStatistics" project_name="Orange3" version="" title="Feature Statistics" position="(430.0, 100.0)" />
+	</nodes>
+	<links>
+		<link id="0" source_node_id="0" sink_node_id="1" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="1" source_node_id="0" sink_node_id="2" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="2" source_node_id="0" sink_node_id="4" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="3" source_node_id="0" sink_node_id="6" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="4" source_node_id="0" sink_node_id="3" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="5" source_node_id="2" sink_node_id="3" enabled="true" source_channel="Features" sink_channel="Features" />
+		<link id="6" source_node_id="0" sink_node_id="5" enabled="true" source_channel="Data" sink_channel="Data" />
+	</links>
+	<annotations>
+		<text id="0" type="text/plain" rect="(20.0, 20.0, 540.0, 82.0)" font-family="Helvetica" font-size="13">PRAKTIKUM 3 — EDA
+
+Correlations outputs a FEATURES channel as well as Data. That is how the
+Scatter Plot below knows which pair to show. Double-click the link to inspect it.</text>
+		<text id="1" type="text/plain" rect="(620.0, 90.0, 330.0, 190.0)" font-family="Helvetica" font-size="13">WHAT TO DO
+1. Distributions: set variable to 'harga'. Is it skewed?
+   Now split by 'kecamatan'.
+2. Correlations: which pair is strongest? Click it and
+   watch the Scatter Plot follow.
+3. Box Plot: 'harga' grouped by 'sertifikat'.
+4. SIMPSON HUNT: in Box Plot, put 'harga' by
+   'kecamatan', then add a Subgroup. Does any
+   comparison reverse once you condition?
+
+Compare everything with notebook week03_eda.ipynb.</text>
+	</annotations>
+	<thumbnail />
+	<node_properties>
+		<properties node_id="0" format="pickle">gAJ9cQAoWAsAAABfX3ZlcnNpb25fX3EBSwFYDAAAAHJlY2VudF9wYXRoc3ECXXEDY29yYW5nZXdpZGdldC51dGlscy5maWxlZGlhbG9ncwpSZWNlbnRQYXRoCnEEKYFxBX1xBihYBwAAAGFic3BhdGhxB1hMAAAAQzovVXNlcnMvR3VudHVyL0RvY3VtZW50cy9OR0FKQVIvREFUQSBTQ0lFTkNFL3ByYWN0aWN1bS9kYXRhL3J1bWFoX3lvZ3lhLnRhYnEIWAYAAABwcmVmaXhxCVgHAAAAYmFzZWRpcnEKWAcAAAByZWxwYXRocQtYFAAAAGRhdGEvcnVtYWhfeW9neWEudGFicQxYBQAAAHRpdGxlcQ1YAAAAAHEOWAUAAABzaGVldHEPaA5YCwAAAGZpbGVfZm9ybWF0cRBOdWJhWAsAAAByZWNlbnRfdXJsc3ERXXESWAYAAABzb3VyY2VxE0sAWAsAAABzaGVldF9uYW1lc3EUfXEVWAMAAAB1cmxxFmgOWAkAAAB2YXJpYWJsZXNxF11xGFgSAAAAY29udHJvbEFyZWFWaXNpYmxlcRmIWBMAAABzYXZlZFdpZGdldEdlb21ldHJ5cRpOdS4=</properties>
+		<properties node_id="1" format="literal">{}</properties>
+		<properties node_id="2" format="literal">{}</properties>
+		<properties node_id="3" format="literal">{}</properties>
+		<properties node_id="4" format="literal">{}</properties>
+		<properties node_id="5" format="literal">{}</properties>
+		<properties node_id="6" format="literal">{}</properties>
+	</node_properties>
+</scheme>
