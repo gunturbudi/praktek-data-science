@@ -3,3 +3,20 @@ __pycache__/
 .ipynb_checkpoints/
 output/
 orange/*.log
+
+# ---- Instructor-only material (not published to the student repo) ----
+# Teaching edition: executed notebooks, solutions and commentary
+notebooks/teaching/
+_src_teaching/
+teaching/
+build_teaching.py
+# Full Orange guides with answers (student versions live in guides/)
+/week0*_*.md
+/week0*_*.pdf
+# Rendered teaching PDFs and NotebookLM material (student handouts are in pdf/student/)
+pdf/*
+!pdf/student/
+# Instructor tooling and side projects
+nb2pdf.py
+orange/md2pdf.py
+example-scraper/

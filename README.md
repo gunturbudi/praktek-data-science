@@ -49,10 +49,9 @@ practicum/
 ├── build.py                  rebuilds notebooks from _src/ (instructors only)
 ├── data/                     the generated datasets (.csv for Python, .tab for Orange)
 ├── notebooks/                week01 … week07  ← students work here
-│   └── teaching/             the executed, fully worked lecturer edition
 ├── _src/                     percent-format sources the notebooks are built from
-├── teaching/                 solutions + output commentary for the teaching edition
-├── pdf/                      rendered PDFs: teaching edition, and student handouts
+├── guides/                   Orange guides (weekNN_*.md / .pdf): what each workflow is, what to do
+├── pdf/student/              the notebooks as printable PDF handouts
 └── orange/                   instructor tooling for the workflows
     ├── build_workflows.py    generates the .ows files
     ├── validate_workflows.py structural + registry checks
@@ -87,8 +86,7 @@ Meeting 8 is the UTS, covering weeks 1–7.
 > confidence intervals, hypothesis testing, multiplicity, A/B testing and
 > peeking — and carries **13 tasks** rather than the usual three or four. Budget
 > a full 100-minute session and run it beforehand: it takes about two minutes
-> to execute, most of it simulation. If time is short, `teaching/notes_week04.py`
-> names the three sections that survive being cut.
+> to execute, most of it simulation.
 
 ---
 
@@ -252,43 +250,6 @@ raises. Run it before releasing changes to students.
 
 To add a task, add a checker to `CHECKS` in `checks.py` and reference it from
 the notebook source.
-
----
-
-## Instructors: the teaching edition
-
-The teaching edition is the student notebook with every TASK worked and a
-commentary cell after each output explaining what the numbers say and what to
-draw out of them. It is meant to be projected in class.
-
-```bash
-python build_teaching.py             # build, execute, render PDFs
-python build_teaching.py --only week03
-python build_teaching.py --students  # also render the blank handouts
-python build_teaching.py --no-run    # build the sources only
-```
-
-| Path | What it is |
-| --- | --- |
-| `teaching/notes_weekNN.py` | the solutions and the commentary, keyed by **student**-notebook cell index |
-| `_src_teaching/` | the merged percent-format source, editable like `_src/` |
-| `notebooks/teaching/` | the executed notebooks — open these to teach from a live kernel |
-| `pdf/weekNN_*_teaching.pdf` | the executed notebook, print-ready |
-| `pdf/student/` | the same notebooks with no outputs, as a handout |
-
-`_src/` is never modified, so the student notebooks and the teaching edition
-cannot drift apart: a change to a source cell flows into both on the next
-build. If you insert or remove a cell in `_src/`, the indices in the matching
-`teaching/notes_weekNN.py` shift — the build fails loudly when an index no
-longer exists, but a *shifted* index attaches the note to the wrong cell, so
-re-check the affected week's notes after editing a source.
-
-PDFs are produced by `nb2pdf.py`, which converts with `nbconvert` and
-paginates with WeasyPrint. No LaTeX and no headless browser are involved.
-
-```bash
-python nb2pdf.py notebooks/teaching/week03_eda_teaching.ipynb --outdir pdf
-```
 
 ---
 
