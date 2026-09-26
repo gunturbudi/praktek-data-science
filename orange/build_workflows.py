@@ -51,6 +51,8 @@ W = {
     "outliers":    ("Orange.widgets.data.owoutliers.OWOutliers", "Outliers"),
     "preprocess":  ("Orange.widgets.data.owpreprocess.OWPreprocess", "Preprocess"),
     "continuize":  ("Orange.widgets.data.owcontinuize.OWContinuize", "Continuize"),
+    "featcons":    ("Orange.widgets.data.owfeatureconstructor.OWFeatureConstructor",
+                    "Feature Constructor"),
     "discretize":  ("Orange.widgets.data.owdiscretize.OWDiscretize", "Discretize"),
     "editdomain":  ("Orange.widgets.data.oweditdomain.OWEditDomain", "Edit Domain"),
     "merge":       ("Orange.widgets.data.owmergedata.OWMergeData", "Merge Data"),
@@ -192,6 +194,150 @@ def preprocess_normalize_settings() -> dict:
         "controlAreaVisible": True,
         "savedWidgetGeometry": None,
     }
+
+
+def pca_no_normalize_settings() -> dict:
+    """PCA widget with its own 'Normalize variables' checkbox switched OFF.
+
+    OWPCA defaults to normalize=True, which silently standardises whatever it
+    receives. Left at the default, week 5's "UNSCALED" branch is scaled too and
+    both branches report identical variance. Switching it off in both PCA
+    widgets makes the upstream Preprocess widget the only difference.
+    """
+    return {
+        "__version__": 1,
+        "normalize": False,
+        "controlAreaVisible": True,
+        "savedWidgetGeometry": None,
+    }
+
+
+def learner_preprocess_settings() -> dict:
+    """Preprocess widget whose *Preprocessor* output is fed into learners.
+
+    A preprocessor sent to a learner widget REPLACES that learner's defaults
+    (impute, one-hot) rather than adding to them -- send only 'normalize' and
+    logistic regression fails on the first categorical column or missing value.
+    So the chain restates the defaults around the scaling: impute, normalise the
+    numeric columns, then one-hot the categorical ones (left as 0/1, as in the
+    notebook's ColumnTransformer).
+    """
+    return {
+        "__version__": 2,
+        "autocommit": True,
+        "storedsettings": {
+            "preprocessors": [
+                ("orange.preprocess.impute", {"method": 2}),      # average / mode
+                ("orange.preprocess.scale", {"method": 2}),       # mean 0, sd 1
+                ("orange.preprocess.continuize", {}),             # one-hot
+            ]
+        },
+        "controlAreaVisible": True,
+        "savedWidgetGeometry": None,
+    }
+
+
+# ---------------------------------------------- week 5: the feature experiment
+# The three ratios the credit risk was generated from (make_datasets.py).
+# Orange's Feature Constructor evaluates each expression row by row; max(.., 1)
+# guards the denominator exactly as `.clip(lower=1)` does in the notebook.
+CREDIT_RATIOS = [
+    ("dti", "debt / max(income, 1)"),
+    ("pti", "monthly_payment / max(income / 12, 1)"),
+    ("util", "balance / max(credit_limit, 1)"),
+]
+
+
+# Widgets created only to read their settings. Kept alive until the process
+# exits: tearing one down with onDeleteWidget() kills the interpreter silently.
+_LIVE_WIDGETS: list = []
+
+
+def _qt_app():
+    """Some widget settings can only be produced by a live widget; that needs Qt."""
+    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+    from AnyQt.QtWidgets import QApplication
+    app = QApplication.instance() or QApplication([])
+    _LIVE_WIDGETS.append(app)      # an unreferenced QApplication is collected, and Qt dies
+    return app
+
+
+def _packed(widget) -> dict:
+    """The settings Orange itself would write for this widget into an .ows."""
+    settings = widget.settingsHandler.pack_data(widget)
+    settings.update(controlAreaVisible=True, savedWidgetGeometry=None)
+    return settings
+
+
+def feature_constructor_settings() -> dict:
+    """Feature Constructor pre-loaded with dti, pti and util."""
+    from Orange.widgets.data.owfeatureconstructor import ContinuousDescriptor
+    return {
+        "__version__": 4,
+        "descriptors": [ContinuousDescriptor(name, expr, 3, False)
+                        for name, expr in CREDIT_RATIOS],
+        "currentIndex": 0,
+        "expressions_with_values": False,
+        "controlAreaVisible": True,
+        "savedWidgetGeometry": None,
+    }
+
+
+def _credit_with_ratios():
+    """credit.tab plus the three ratios, built the way the Feature Constructor
+    widget builds them, so context settings keyed on this domain will match."""
+    from Orange.data import Domain, Table
+    from Orange.widgets.data.owfeatureconstructor import (ContinuousDescriptor,
+                                                          construct_variables)
+    data = Table(str(DATA / "credit.tab"))
+    new = construct_variables([ContinuousDescriptor(n, e, 3, False)
+                               for n, e in CREDIT_RATIOS], data)
+    domain = Domain(data.domain.attributes + tuple(new),
+                    data.domain.class_vars, data.domain.metas)
+    return data.transform(domain)
+
+
+def select_ratios_only_settings() -> dict:
+    """Select Columns keeping ONLY dti, pti, util as features (target kept).
+
+    Select Columns stores its choice as a *context* setting keyed on the input
+    domain, which is impractical to write by hand -- so we configure a real
+    widget on the real domain and save what it would save.
+    """
+    _qt_app()
+    from Orange.widgets.data.owselectcolumns import OWSelectAttributes
+    data = _credit_with_ratios()
+    w = OWSelectAttributes()
+    w.set_data(data)
+    keep = {name for name, _ in CREDIT_RATIOS}
+    attrs = data.domain.attributes
+    w.used_attrs[:] = [a for a in attrs if a.name in keep]
+    w.available_attrs[:] = [a for a in attrs if a.name not in keep]
+    w.update_domain_role_hints()
+    settings = _packed(w)
+    _LIVE_WIDGETS.append(w)        # deleting a widget mid-run crashes Qt
+    return settings
+
+
+def boxplot_settings(variable: str, group_by: str) -> dict:
+    """Box Plot showing `variable` split by `group_by` (a context setting)."""
+    _qt_app()
+    from Orange.widgets.visualize.owboxplot import OWBoxPlot
+    data = _credit_with_ratios()
+    w = OWBoxPlot()
+    w.set_data(data)
+    w.attribute = data.domain[variable]
+    w.group_var = data.domain[group_by]
+    settings = _packed(w)
+    _LIVE_WIDGETS.append(w)        # deleting a widget mid-run crashes Qt
+    return settings
+
+
+def learner_settings(kind: str, name: str, **extra) -> dict:
+    """A learner widget with a readable name (shown as the row in Test and Score)."""
+    versions = {"logreg": 2, "knn": 1, "forest": 1}
+    return {"__version__": versions[kind], "learner_name": name, "auto_apply": True,
+            **extra, "controlAreaVisible": True, "savedWidgetGeometry": None}
 
 
 SCRIPTS = HERE / "scripts"
@@ -498,45 +644,93 @@ def week03():
 def week04():
     wf = Workflow(
         "Week 4 — Inference and A/B testing",
-        "Distributions by group, sieve/mosaic for association, "
-        "and a t-test via Python Script.")
+        "Distribution shape, association by group, and the formal tests "
+        "via Python Script.")
 
-    wf.note(20, 20, 560, 82,
+    wf.note(20, 20, 700, 96,
             "PRAKTIKUM 4 — Inference\n\n"
-            "Orange is a visual tool, not a statistics package. It shows "
-            "association clearly\n(Sieve, Mosaic, Distributions) and defers "
-            "the formal test to the Python Script.")
+            "Orange is a visual tool, not a statistics package. It shows you "
+            "the SHAPE of a\nvariable (Feature Statistics, Distributions) and "
+            "the ASSOCIATION between two\n(Sieve, Mosaic), then defers every "
+            "z, p and interval to the Python Script.\n"
+            "Knowing where your tool stops is the skill this week teaches.")
 
-    f = wf.node("file", 60, 200, "File: ab_test.tab",
+    f = wf.node("file", 60, 300, "File: ab_test.tab",
                 settings=file_settings("ab_test.tab"))
-    dist = wf.node("distributions", 240, 110, "Distributions")
-    box = wf.node("boxplot", 240, 200, "Box Plot")
-    sieve = wf.node("sieve", 240, 290, "Sieve Diagram")
-    mos = wf.node("mosaic", 430, 290, "Mosaic Display")
-    py = wf.node("pythonscript", 430, 110, "Python Script: t-test",
-                  settings=python_script_settings(
-                      "A/B test", load_script("ab_test.py")))
-    t = wf.node("table", 620, 110, "Test output")
 
-    wf.link(f, dist)
-    wf.link(f, box)
-    wf.link(f, sieve)
-    wf.link(f, mos)
-    wf.link(f, py)
+    # -- what SHAPE is each column? (notebook section 2) --
+    fstat = wf.node("featstats", 250, 140, "Feature Statistics")
+    dist = wf.node("distributions", 250, 230, "Distributions")
+
+    # -- do two variables move together? (notebook sections 1 and 5) --
+    box = wf.node("boxplot", 250, 320, "Box Plot")
+    sieve = wf.node("sieve", 250, 410, "Sieve Diagram")
+    mos = wf.node("mosaic", 250, 500, "Mosaic Display")
+
+    # -- one segment on its own (notebook section 6) --
+    seg = wf.node("selectrows", 450, 500, "Select Rows: one segment")
+    seg_sieve = wf.node("sieve", 650, 500, "Sieve: that segment")
+
+    # -- the numbers Orange will not give you (notebook sections 6 and 7) --
+    py = wf.node("pythonscript", 450, 140, "Python Script: A/B + segments",
+                 settings=python_script_settings(
+                     "A/B test", load_script("ab_test.py")))
+    t = wf.node("table", 650, 140, "Test output")
+
+    for sink in (fstat, dist, box, sieve, mos, seg, py):
+        wf.link(f, sink)
+    wf.link(seg, seg_sieve)
     wf.link(py, t)
 
-    wf.note(620, 200, 340, 210,
-            "WHAT TO DO\n"
-            "1. Distributions: 'converted', split by 'variant'.\n"
-            "   Eyeball the difference -- is it convincing?\n"
-            "2. Box Plot: 'session_seconds' by 'variant'. Orange\n"
-            "   prints a t-test at the bottom of this widget.\n"
-            "3. Sieve Diagram: variant x converted. The colour\n"
-            "   shows the deviation from independence.\n"
-            "4. SIMPSON CHECK: Mosaic with variant, converted\n"
-            "   AND device. Does the lift hold in both devices?\n"
-            "5. Python Script: paste the snippet from the book\n"
-            "   (section 4.8.2) to get z, p and the CI.")
+    wf.note(870, 120, 360, 250,
+            "WHAT SHAPE IS EACH COLUMN?  (notebook 2)\n"
+            "1. Feature Statistics: look at the little\n"
+            "   histogram beside each column. Which are\n"
+            "   symmetric, which are right-skewed?\n\n"
+            "2. Distributions: 'pages_viewed'. A count of\n"
+            "   events in one visit -- that is a Poisson\n"
+            "   shape. Then 'session_seconds': the long\n"
+            "   right tail is log-normal.\n\n"
+            "3. Distributions: 'converted', split by\n"
+            "   'variant'. Eyeball the difference.\n"
+            "   Is it convincing? Be honest.")
+
+    wf.note(870, 390, 360, 250,
+            "IS THERE AN ASSOCIATION?  (notebook 1, 5)\n"
+            "4. Box Plot: 'session_seconds' by 'variant'.\n"
+            "   Orange prints a t-test at the bottom --\n"
+            "   the only test it does for you.\n\n"
+            "5. Sieve Diagram: variant x converted. The\n"
+            "   colour is the deviation from independence;\n"
+            "   the grid density is the cell count.\n\n"
+            "6. Mosaic Display: variant, converted AND\n"
+            "   device. Does the lift hold in both\n"
+            "   devices? Is the device MIX the same in\n"
+            "   both arms? The second question decides\n"
+            "   whether device could confound anything.")
+
+    wf.note(450, 620, 520, 160,
+            "ONE SEGMENT AT A TIME  (notebook 6)\n"
+            "7. Select Rows: add the condition device = mobile, then read the\n"
+            "   Sieve downstream. Now switch it to desktop and read it again.\n"
+            "   The association is obvious on one and invisible on the other.\n\n"
+            "   That is TWO hypothesis tests, and you chose which to report\n"
+            "   after seeing the data. The Python Script applies a Holm\n"
+            "   correction for exactly this reason. Notebook section 6 runs ten\n"
+            "   such slices and shows what noise alone produces.")
+
+    wf.note(450, 250, 380, 200,
+            "THE NUMBERS ORANGE WILL NOT GIVE YOU\n"
+            "8. Python Script: already loaded, just run it.\n"
+            "   It prints, in the order a real analysis\n"
+            "   goes: the sample-ratio check, the lift\n"
+            "   with a 95% interval, the sample size that\n"
+            "   was actually required, and the per-device\n"
+            "   segments with a Holm correction.\n\n"
+            "   Same file as orange/scripts/ab_test.py,\n"
+            "   which runs on its own with\n"
+            "   'python scripts/ab_test.py'.")
+
     wf.save("week04_inference.ows")
 
 
@@ -544,43 +738,115 @@ def week04():
 def week05():
     wf = Workflow(
         "Week 5 — Feature engineering and PCA",
-        "Rank features, continuize, project with PCA, and see leakage.")
+        "Build ratio features and measure what they buy; then see why PCA "
+        "needs scaling.")
 
-    wf.note(20, 20, 560, 82,
+    wf.note(20, 20, 900, 86,
             "PRAKTIKUM 5 — Features and PCA\n\n"
-            "PCA REQUIRES SCALING. Run it once with Preprocess in the chain "
-            "and once\nwithout, and compare the variance explained. That "
-            "difference is the whole lesson.")
+            "PART A (top): try things with FEATURES and let Test and Score judge "
+            "them -- same learners, same folds, only the columns change.\n"
+            "PART B (bottom): PCA REQUIRES SCALING. The two PCA branches differ "
+            "in one thing only.")
 
-    f = wf.node("file", 60, 220, "File: credit.tab",
+    f = wf.node("file", 60, 330, "File: credit.tab",
                 settings=file_settings("credit.tab"))
-    rank = wf.node("rank", 240, 110, "Rank")
-    prep = wf.node("preprocess", 240, 220, "Preprocess: normalise",
-                   settings=preprocess_normalize_settings())
-    pca_s = wf.node("pca", 420, 180, "PCA (scaled)")
-    pca_u = wf.node("pca", 420, 300, "PCA (UNSCALED)")
-    sc1 = wf.node("scatter", 600, 180, "PC1 vs PC2 (scaled)")
-    sc2 = wf.node("scatter", 600, 300, "PC1 vs PC2 (unscaled)")
-    t = wf.node("table", 420, 60, "Ranked features")
 
-    wf.link(f, rank)
-    wf.link(rank, t, src_ch="Reduced Data")
+    # ---- Part A: the feature experiment ------------------------------------
+    rank_raw = wf.node("rank", 240, 140, "Rank: raw columns")
+    fc = wf.node("featcons", 240, 300, "Feature Constructor: dti, pti, util",
+                 settings=feature_constructor_settings())
+    rank_eng = wf.node("rank", 440, 180, "Rank: with ratios")
+    box = wf.node("boxplot", 440, 270, "Box Plot: dti by default",
+                  settings=boxplot_settings("dti", "default"))
+    sel = wf.node("selectcols", 440, 380, "Select Columns: ratios only",
+                  settings=select_ratios_only_settings())
+    cont = wf.node("continuize", 240, 460, "Continuize: see the encoding")
+    cont_t = wf.node("table", 440, 480, "Encoded data")
+
+    norm = wf.node("preprocess", 460, 590, "Preprocess: impute + scale + one-hot",
+                   settings=learner_preprocess_settings())
+    lr = wf.node("logreg", 660, 150, "Logistic Regression (scaled)",
+                 settings=learner_settings("logreg", "Logistic Regression (scaled)"))
+    knn = wf.node("knn", 660, 250, "kNN (k=15)",
+                  settings=learner_settings("knn", "kNN (k=15)", n_neighbors=15))
+    knn_s = wf.node("knn", 660, 350, "kNN (k=15, scaled)",
+                    settings=learner_settings("knn", "kNN (k=15, scaled)",
+                                              n_neighbors=15))
+    rf = wf.node("forest", 660, 450, "Random Forest",
+                 settings=learner_settings("forest", "Random Forest",
+                                           n_estimators=100, use_random_state=True))
+
+    ts_raw = wf.node("testscore", 880, 160, "Test and Score: raw columns")
+    ts_eng = wf.node("testscore", 880, 300, "Test and Score: + ratios")
+    ts_only = wf.node("testscore", 880, 440, "Test and Score: ratios only")
+
+    wf.link(f, rank_raw)
+    wf.link(f, fc)
+    wf.link(fc, rank_eng)
+    wf.link(fc, box)
+    wf.link(fc, sel)
+    wf.link(f, cont)
+    wf.link(cont, cont_t)
+    # Scaling goes INTO the learner, so it is refitted on each training fold.
+    wf.link(norm, lr, src_ch="Preprocessor", sink_ch="Preprocessor")
+    wf.link(norm, knn_s, src_ch="Preprocessor", sink_ch="Preprocessor")
+    wf.link(f, ts_raw)
+    wf.link(fc, ts_eng)
+    wf.link(sel, ts_only)
+    for learner in (lr, knn, knn_s, rf):
+        for ts in (ts_raw, ts_eng, ts_only):
+            wf.link(learner, ts, src_ch="Learner", sink_ch="Learner")
+
+    wf.note(1080, 120, 380, 440,
+            "PART A — WHAT TO DO\n"
+            "1. Compare the two Rank widgets. Where do dti,\n"
+            "   pti and util land once they exist? Where were\n"
+            "   debt and income before?\n"
+            "2. Box Plot: does dti look different for defaulters?\n"
+            "   Switch the variable to debt, then income.\n"
+            "3. Open the three Test and Score widgets, sort by\n"
+            "   AUC, and fill in a 4 x 3 table. Which model\n"
+            "   gains most from the ratios? Which gains least?\n"
+            "4. Unscaled kNN scores EXACTLY the same with and\n"
+            "   without the ratios; scaled kNN gains the most.\n"
+            "   Why can unscaled kNN not see dti, pti, util?\n"
+            "5. 'Ratios only' has 3 features instead of 16.\n"
+            "   Unscaled kNN suddenly jumps. What did removing\n"
+            "   the rupiah columns do to its distances?\n"
+            "6. Try your own: add a 4th expression in Feature\n"
+            "   Constructor (e.g. loan_amount / max(income, 1))\n"
+            "   and watch all three Test and Score update.\n"
+            "7. Continuize: switch the treatment of categorical\n"
+            "   columns (one-hot, ordinal, remove) and look at\n"
+            "   the Encoded data table.")
+
+    # ---- Part B: PCA needs scaling -----------------------------------------
+    prep = wf.node("preprocess", 240, 720, "Preprocess: normalise",
+                   settings=preprocess_normalize_settings())
+    pca_s = wf.node("pca", 440, 690, "PCA (scaled)",
+                    settings=pca_no_normalize_settings())
+    pca_u = wf.node("pca", 440, 800, "PCA (UNSCALED)",
+                    settings=pca_no_normalize_settings())
+    sc1 = wf.node("scatter", 640, 690, "PC1 vs PC2 (scaled)")
+    sc2 = wf.node("scatter", 640, 800, "PC1 vs PC2 (unscaled)")
+
     wf.link(f, prep)
     wf.link(prep, pca_s, src_ch="Preprocessed Data")
     wf.link(f, pca_u)
     wf.link(pca_s, sc1, src_ch="Transformed Data")
     wf.link(pca_u, sc2, src_ch="Transformed Data")
 
-    wf.note(780, 100, 330, 210,
-            "WHAT TO DO\n"
-            "1. Rank: which features score highest by information\n"
-            "   gain? Compare with the notebook's mutual info.\n"
-            "2. Preprocess: enable 'Normalize Features'.\n"
-            "3. Open BOTH PCA widgets. How many components\n"
-            "   reach 95% variance in each?\n"
-            "   Scaled: ~? Unscaled: ~1-2. Why?\n"
-            "4. Compare the two scatter plots. The unscaled one\n"
-            "   is essentially a plot of one variable.\n\n"
+    wf.note(820, 640, 380, 250,
+            "PART B — WHAT TO DO\n"
+            "1. Preprocess: confirm 'Normalize Features' is ON.\n"
+            "   In both PCA widgets, 'Normalize variables' is\n"
+            "   deliberately OFF, so Preprocess is the only\n"
+            "   difference between the two branches.\n"
+            "2. Open BOTH PCA widgets. How many components\n"
+            "   reach 95% variance in each? (Unscaled: very\n"
+            "   few. Scaled: many more.) Why?\n"
+            "3. Compare the two scatter plots. The unscaled one\n"
+            "   is essentially a plot of one variable. Which?\n\n"
             "See book section 5.6.4, limitation 2.")
     wf.save("week05_features_pca.ows")
 

@@ -49,7 +49,10 @@ practicum/
 ├── build.py                  rebuilds notebooks from _src/ (instructors only)
 ├── data/                     the generated datasets (.csv for Python, .tab for Orange)
 ├── notebooks/                week01 … week07  ← students work here
+│   └── teaching/             the executed, fully worked lecturer edition
 ├── _src/                     percent-format sources the notebooks are built from
+├── teaching/                 solutions + output commentary for the teaching edition
+├── pdf/                      rendered PDFs: teaching edition, and student handouts
 └── orange/                   instructor tooling for the workflows
     ├── build_workflows.py    generates the .ows files
     ├── validate_workflows.py structural + registry checks
@@ -72,12 +75,20 @@ practicum/
 | 1 | `week01_foundations.ipynb` | `week01_orientation.ows` | Ch. 1 | — |
 | 2 | `week02_wrangling.ipynb` | `week02_wrangling.ows` | Ch. 2 | 3% |
 | 3 | `week03_eda.ipynb` | `week03_eda.ows` | Ch. 3 | 3% |
-| 4 | `week04_inference.ipynb` | `week04_inference.ows` | Ch. 4 | 3% |
+| 4 | `week04_inference.ipynb` | `week04_inference.ows` | Ch. 4 | 3% |¹
 | 5 | `week05_features.ipynb` | `week05_features_pca.ows` | Ch. 5 | 3% |
 | 6 | `week06_regression.ipynb` | `week06_regression.ows` | Ch. 6 | 3% |
 | 7 | `week07_classification.ipynb` | `week07_classification.ows` | Ch. 7 | 3% |
 
 Meeting 8 is the UTS, covering weeks 1–7.
+
+> ¹ **Week 4 is the long one.** Its notebook mirrors all nine sections of
+> chapter 4 — probability and Bayes, choosing a distribution, LLN/CLT,
+> confidence intervals, hypothesis testing, multiplicity, A/B testing and
+> peeking — and carries **13 tasks** rather than the usual three or four. Budget
+> a full 100-minute session and run it beforehand: it takes about two minutes
+> to execute, most of it simulation. If time is short, `teaching/notes_week04.py`
+> names the three sections that survive being cut.
 
 ---
 
@@ -114,7 +125,7 @@ the book's exactly. Nothing is downloaded.
 | `sales_raw.csv` | 5,120 | week 2 | Deliberately messy: `;` separated, European decimals, `dd/mm/yyyy` dates, `-999` sentinels, duplicate orders, dirty region strings |
 | `sales_clean.csv` / `.tab` | 4,880 | weeks 1, 3 | The same data, already wrangled |
 | `customers.csv` | 770 | week 2 | Reference table; 30 customers deliberately absent, so the join has unmatched rows |
-| `ab_test.csv` / `.tab` | 70,000 | week 4 | A/B test with a real +12% relative lift, plus a `device` confounder that produces a Simpson-style reversal |
+| `ab_test.csv` / `.tab` | 70,000 | week 4 | A/B test with a real +12% relative lift concentrated on mobile. `variant` and `device` are drawn independently, so device is **balanced** across arms: what week 4 finds is *effect heterogeneity*, not a Simpson reversal. Every column is also a worked example of a different distribution — `converted` Bernoulli, `pages_viewed` Poisson, `day` uniform, `session_seconds` log-normal |
 | `transactions.csv` | 30,000 | week 5 | Raw log, to be aggregated into RFM features |
 | `credit.csv` / `.tab` | 4,000 | weeks 1, 2, 5, 6, 7 | 20% default rate; risk depends on **ratios** (`dti`, `pti`, `util`), not raw amounts. Income is MAR-missing (older applicants omit it more) |
 | `rumah_yogya.csv` / `.tab` | 2,200 | weeks 3, 6 | House prices; log-linear in area, heteroscedastic on the raw scale |
@@ -163,13 +174,30 @@ beside the `data/` folder.
 Two workflows would otherwise open in a state that cannot demonstrate their own
 point, so they carry settings:
 
-- **Week 4** — the Python Script widget already contains the two-proportion
-  *z*-test, so it runs as shipped. That script also lives at
-  `orange/scripts/ab_test.py` and can be run on its own with
-  `python scripts/ab_test.py`, which is how it is tested.
-- **Week 5** — the Preprocess widget already has *Normalize Features* enabled
-  (mean 0, sd 1), so the scaled and unscaled PCA branches genuinely differ the
-  moment you open the file. Toggle it off to see the contrast collapse.
+- **Week 4** — the Python Script widget already contains the whole analysis (the
+  sample-ratio check, the two-proportion *z*-test with a confidence interval, the
+  required sample size, and the per-device segments with a Holm correction), so it
+  runs as shipped. That script also lives at `orange/scripts/ab_test.py` and can be
+  run on its own with `python scripts/ab_test.py`, which is how it is tested.
+- **Week 5** has two parts.
+  - *Part A, features:* the Feature Constructor already holds `dti`, `pti` and
+    `util`; Select Columns keeps only those three; Box Plot shows `dti` by
+    `default`; kNN uses k = 15 and Random Forest a fixed seed. Four learners feed
+    three Test and Score widgets (raw columns / + ratios / ratios only), so the
+    features are the only thing that changes. The scaled learners receive a
+    Preprocess *impute → normalise → one-hot* chain through their `Preprocessor`
+    input. That chain must restate the imputation and one-hot encoding: a
+    preprocessor sent to a learner **replaces** the learner's defaults, so
+    sending "normalise" alone makes logistic regression fail.
+  - *Part B, PCA:* the Preprocess widget has *Normalize Features* enabled
+    (mean 0, sd 1), and both PCA widgets have their own *Normalize variables*
+    switched **off**. Orange's PCA widget normalises by default; left on, it
+    would scale the "unscaled" branch too and both branches would report
+    identical variance. Toggle Preprocess off to see the contrast collapse.
+
+  Select Columns and Box Plot store their choices as *context* settings keyed
+  on the input domain, so `build_workflows.py` configures a live widget and
+  saves what it would save, rather than writing them by hand.
 
 ### Orange version
 
@@ -224,6 +252,43 @@ raises. Run it before releasing changes to students.
 
 To add a task, add a checker to `CHECKS` in `checks.py` and reference it from
 the notebook source.
+
+---
+
+## Instructors: the teaching edition
+
+The teaching edition is the student notebook with every TASK worked and a
+commentary cell after each output explaining what the numbers say and what to
+draw out of them. It is meant to be projected in class.
+
+```bash
+python build_teaching.py             # build, execute, render PDFs
+python build_teaching.py --only week03
+python build_teaching.py --students  # also render the blank handouts
+python build_teaching.py --no-run    # build the sources only
+```
+
+| Path | What it is |
+| --- | --- |
+| `teaching/notes_weekNN.py` | the solutions and the commentary, keyed by **student**-notebook cell index |
+| `_src_teaching/` | the merged percent-format source, editable like `_src/` |
+| `notebooks/teaching/` | the executed notebooks — open these to teach from a live kernel |
+| `pdf/weekNN_*_teaching.pdf` | the executed notebook, print-ready |
+| `pdf/student/` | the same notebooks with no outputs, as a handout |
+
+`_src/` is never modified, so the student notebooks and the teaching edition
+cannot drift apart: a change to a source cell flows into both on the next
+build. If you insert or remove a cell in `_src/`, the indices in the matching
+`teaching/notes_weekNN.py` shift — the build fails loudly when an index no
+longer exists, but a *shifted* index attaches the note to the wrong cell, so
+re-check the affected week's notes after editing a source.
+
+PDFs are produced by `nb2pdf.py`, which converts with `nbconvert` and
+paginates with WeasyPrint. No LaTeX and no headless browser are involved.
+
+```bash
+python nb2pdf.py notebooks/teaching/week03_eda_teaching.ipynb --outdir pdf
+```
 
 ---
 

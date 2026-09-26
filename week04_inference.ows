@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<scheme version="2.0" title="Week 4 — Inference and A/B testing" description="Distributions by group, sieve/mosaic for association, and a t-test via Python Script.">
+<scheme version="2.0" title="Week 4 — Inference and A/B testing" description="Distribution shape, association by group, and the formal tests via Python Script.">
 	<nodes>
-		<node id="0" name="File" qualified_name="Orange.widgets.data.owfile.OWFile" project_name="Orange3" version="" title="File: ab_test.tab" position="(60.0, 200.0)" />
-		<node id="1" name="Distributions" qualified_name="Orange.widgets.visualize.owdistributions.OWDistributions" project_name="Orange3" version="" title="Distributions" position="(240.0, 110.0)" />
-		<node id="2" name="Box Plot" qualified_name="Orange.widgets.visualize.owboxplot.OWBoxPlot" project_name="Orange3" version="" title="Box Plot" position="(240.0, 200.0)" />
-		<node id="3" name="Sieve Diagram" qualified_name="Orange.widgets.visualize.owsieve.OWSieveDiagram" project_name="Orange3" version="" title="Sieve Diagram" position="(240.0, 290.0)" />
-		<node id="4" name="Mosaic Display" qualified_name="Orange.widgets.visualize.owmosaic.OWMosaicDisplay" project_name="Orange3" version="" title="Mosaic Display" position="(430.0, 290.0)" />
-		<node id="5" name="Python Script" qualified_name="Orange.widgets.data.owpythonscript.OWPythonScript" project_name="Orange3" version="" title="Python Script: t-test" position="(430.0, 110.0)" />
-		<node id="6" name="Data Table" qualified_name="Orange.widgets.data.owtable.OWTable" project_name="Orange3" version="" title="Test output" position="(620.0, 110.0)" />
+		<node id="0" name="File" qualified_name="Orange.widgets.data.owfile.OWFile" project_name="Orange3" version="" title="File: ab_test.tab" position="(60.0, 300.0)" />
+		<node id="1" name="Feature Statistics" qualified_name="Orange.widgets.data.owfeaturestatistics.OWFeatureStatistics" project_name="Orange3" version="" title="Feature Statistics" position="(250.0, 140.0)" />
+		<node id="2" name="Distributions" qualified_name="Orange.widgets.visualize.owdistributions.OWDistributions" project_name="Orange3" version="" title="Distributions" position="(250.0, 230.0)" />
+		<node id="3" name="Box Plot" qualified_name="Orange.widgets.visualize.owboxplot.OWBoxPlot" project_name="Orange3" version="" title="Box Plot" position="(250.0, 320.0)" />
+		<node id="4" name="Sieve Diagram" qualified_name="Orange.widgets.visualize.owsieve.OWSieveDiagram" project_name="Orange3" version="" title="Sieve Diagram" position="(250.0, 410.0)" />
+		<node id="5" name="Mosaic Display" qualified_name="Orange.widgets.visualize.owmosaic.OWMosaicDisplay" project_name="Orange3" version="" title="Mosaic Display" position="(250.0, 500.0)" />
+		<node id="6" name="Select Rows" qualified_name="Orange.widgets.data.owselectrows.OWSelectRows" project_name="Orange3" version="" title="Select Rows: one segment" position="(450.0, 500.0)" />
+		<node id="7" name="Sieve Diagram" qualified_name="Orange.widgets.visualize.owsieve.OWSieveDiagram" project_name="Orange3" version="" title="Sieve: that segment" position="(650.0, 500.0)" />
+		<node id="8" name="Python Script" qualified_name="Orange.widgets.data.owpythonscript.OWPythonScript" project_name="Orange3" version="" title="Python Script: A/B + segments" position="(450.0, 140.0)" />
+		<node id="9" name="Data Table" qualified_name="Orange.widgets.data.owtable.OWTable" project_name="Orange3" version="" title="Test output" position="(650.0, 140.0)" />
 	</nodes>
 	<links>
 		<link id="0" source_node_id="0" sink_node_id="1" enabled="true" source_channel="Data" sink_channel="Data" />
@@ -15,24 +18,65 @@
 		<link id="2" source_node_id="0" sink_node_id="3" enabled="true" source_channel="Data" sink_channel="Data" />
 		<link id="3" source_node_id="0" sink_node_id="4" enabled="true" source_channel="Data" sink_channel="Data" />
 		<link id="4" source_node_id="0" sink_node_id="5" enabled="true" source_channel="Data" sink_channel="Data" />
-		<link id="5" source_node_id="5" sink_node_id="6" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="5" source_node_id="0" sink_node_id="6" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="6" source_node_id="0" sink_node_id="8" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="7" source_node_id="6" sink_node_id="7" enabled="true" source_channel="Data" sink_channel="Data" />
+		<link id="8" source_node_id="8" sink_node_id="9" enabled="true" source_channel="Data" sink_channel="Data" />
 	</links>
 	<annotations>
-		<text id="0" type="text/plain" rect="(20.0, 20.0, 560.0, 82.0)" font-family="Helvetica" font-size="13">PRAKTIKUM 4 — Inference
+		<text id="0" type="text/plain" rect="(20.0, 20.0, 700.0, 96.0)" font-family="Helvetica" font-size="13">PRAKTIKUM 4 — Inference
 
-Orange is a visual tool, not a statistics package. It shows association clearly
-(Sieve, Mosaic, Distributions) and defers the formal test to the Python Script.</text>
-		<text id="1" type="text/plain" rect="(620.0, 200.0, 340.0, 210.0)" font-family="Helvetica" font-size="13">WHAT TO DO
-1. Distributions: 'converted', split by 'variant'.
-   Eyeball the difference -- is it convincing?
-2. Box Plot: 'session_seconds' by 'variant'. Orange
-   prints a t-test at the bottom of this widget.
-3. Sieve Diagram: variant x converted. The colour
-   shows the deviation from independence.
-4. SIMPSON CHECK: Mosaic with variant, converted
-   AND device. Does the lift hold in both devices?
-5. Python Script: paste the snippet from the book
-   (section 4.8.2) to get z, p and the CI.</text>
+Orange is a visual tool, not a statistics package. It shows you the SHAPE of a
+variable (Feature Statistics, Distributions) and the ASSOCIATION between two
+(Sieve, Mosaic), then defers every z, p and interval to the Python Script.
+Knowing where your tool stops is the skill this week teaches.</text>
+		<text id="1" type="text/plain" rect="(870.0, 120.0, 360.0, 250.0)" font-family="Helvetica" font-size="13">WHAT SHAPE IS EACH COLUMN?  (notebook 2)
+1. Feature Statistics: look at the little
+   histogram beside each column. Which are
+   symmetric, which are right-skewed?
+
+2. Distributions: 'pages_viewed'. A count of
+   events in one visit -- that is a Poisson
+   shape. Then 'session_seconds': the long
+   right tail is log-normal.
+
+3. Distributions: 'converted', split by
+   'variant'. Eyeball the difference.
+   Is it convincing? Be honest.</text>
+		<text id="2" type="text/plain" rect="(870.0, 390.0, 360.0, 250.0)" font-family="Helvetica" font-size="13">IS THERE AN ASSOCIATION?  (notebook 1, 5)
+4. Box Plot: 'session_seconds' by 'variant'.
+   Orange prints a t-test at the bottom --
+   the only test it does for you.
+
+5. Sieve Diagram: variant x converted. The
+   colour is the deviation from independence;
+   the grid density is the cell count.
+
+6. Mosaic Display: variant, converted AND
+   device. Does the lift hold in both
+   devices? Is the device MIX the same in
+   both arms? The second question decides
+   whether device could confound anything.</text>
+		<text id="3" type="text/plain" rect="(450.0, 620.0, 520.0, 160.0)" font-family="Helvetica" font-size="13">ONE SEGMENT AT A TIME  (notebook 6)
+7. Select Rows: add the condition device = mobile, then read the
+   Sieve downstream. Now switch it to desktop and read it again.
+   The association is obvious on one and invisible on the other.
+
+   That is TWO hypothesis tests, and you chose which to report
+   after seeing the data. The Python Script applies a Holm
+   correction for exactly this reason. Notebook section 6 runs ten
+   such slices and shows what noise alone produces.</text>
+		<text id="4" type="text/plain" rect="(450.0, 250.0, 380.0, 200.0)" font-family="Helvetica" font-size="13">THE NUMBERS ORANGE WILL NOT GIVE YOU
+8. Python Script: already loaded, just run it.
+   It prints, in the order a real analysis
+   goes: the sample-ratio check, the lift
+   with a 95% interval, the sample size that
+   was actually required, and the per-device
+   segments with a Holm correction.
+
+   Same file as orange/scripts/ab_test.py,
+   which runs on its own with
+   'python scripts/ab_test.py'.</text>
 	</annotations>
 	<thumbnail />
 	<node_properties>
@@ -41,7 +85,10 @@ Orange is a visual tool, not a statistics package. It shows association clearly
 		<properties node_id="2" format="literal">{}</properties>
 		<properties node_id="3" format="literal">{}</properties>
 		<properties node_id="4" format="literal">{}</properties>
-		<properties node_id="5" format="pickle">gAJ9cQAoWAsAAABfX3ZlcnNpb25fX3EBSwJYEgAAAGN1cnJlbnRTY3JpcHRJbmRleHECSwBYDQAAAHNjcmlwdExpYnJhcnlxA11xBH1xBShYBAAAAG5hbWVxBlgIAAAAQS9CIHRlc3RxB1gGAAAAc2NyaXB0cQhYeAsAACMgV2VlayA0IOKAlCB0aGUgZm9ybWFsIHRlc3QgT3JhbmdlIGRvZXMgbm90IGRvIGZvciB5b3UuCiMKIyBUaGlzIHNjcmlwdCBpcyBlbWJlZGRlZCBpbnRvIHRoZSBQeXRob24gU2NyaXB0IHdpZGdldCBvZgojIHdlZWswNF9pbmZlcmVuY2Uub3dzLiBJdCBhbHNvIHJ1bnMgc3RhbmRhbG9uZToKIwojICAgICBweXRob24gc2NyaXB0cy9hYl90ZXN0LnB5CiMKIyBJbnNpZGUgT3JhbmdlLCBgaW5fZGF0YWAgaXMgc3VwcGxpZWQgYnkgdGhlIHdpZGdldC4gU3RhbmRhbG9uZSwgd2UgbG9hZCB0aGUKIyB0YWJsZSBvdXJzZWx2ZXMuCmltcG9ydCBudW1weSBhcyBucApmcm9tIHNjaXB5IGltcG9ydCBzdGF0cwpmcm9tIE9yYW5nZS5kYXRhIGltcG9ydCBUYWJsZQoKdHJ5OgogICAgaW5fZGF0YSAgICAgICAgICAjIHByb3ZpZGVkIGJ5IHRoZSBQeXRob24gU2NyaXB0IHdpZGdldApleGNlcHQgTmFtZUVycm9yOiAgICAjIHJ1bm5pbmcgc3RhbmRhbG9uZQogICAgZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCiAgICBpbl9kYXRhID0gVGFibGUoc3RyKFBhdGgoX19maWxlX18pLnBhcmVudC5wYXJlbnQucGFyZW50IC8gImRhdGEiIC8gImFiX3Rlc3QudGFiIikpCgpWQVJJQU5UID0gInZhcmlhbnQiClRBUkdFVCA9ICJjb252ZXJ0ZWQiCgoKZGVmIGNvbHVtbih0YWJsZSwgbmFtZSk6CiAgICAiIiJSZXR1cm4gYSBjb2x1bW4gYnkgbmFtZSBhcyBhIGxpc3Qgb2Ygc3RyaW5ncywgd2hlcmV2ZXIgaXQgbGl2ZXMuIiIiCiAgICBkb21haW4gPSB0YWJsZS5kb21haW4KICAgIGZvciBzb3VyY2UsIHZhcl9saXN0IGluICgodGFibGUuWCwgZG9tYWluLmF0dHJpYnV0ZXMpLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICh0YWJsZS5ZLnJlc2hhcGUoLTEsIDEpLCBbZG9tYWluLmNsYXNzX3Zhcl0pLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICh0YWJsZS5tZXRhcywgZG9tYWluLm1ldGFzKSk6CiAgICAgICAgZm9yIGksIHZhciBpbiBlbnVtZXJhdGUodmFyX2xpc3QpOgogICAgICAgICAgICBpZiB2YXIgaXMgbm90IE5vbmUgYW5kIHZhci5uYW1lID09IG5hbWU6CiAgICAgICAgICAgICAgICBjb2wgPSBzb3VyY2VbOiwgaV0KICAgICAgICAgICAgICAgIGlmIHZhci5pc19kaXNjcmV0ZToKICAgICAgICAgICAgICAgICAgICByZXR1cm4gW3Zhci52YWx1ZXNbaW50KHYpXSBmb3IgdiBpbiBjb2xdCiAgICAgICAgICAgICAgICByZXR1cm4gY29sCiAgICByYWlzZSBLZXlFcnJvcihuYW1lKQoKCnZhcmlhbnQgPSBucC5hcnJheShjb2x1bW4oaW5fZGF0YSwgVkFSSUFOVCkpCmNvbnZlcnRlZCA9IG5wLmFycmF5KGNvbHVtbihpbl9kYXRhLCBUQVJHRVQpKQoKYXJtcyA9IHNvcnRlZChzZXQodmFyaWFudCkpCnBvc2l0aXZlID0gc29ydGVkKHNldChjb252ZXJ0ZWQpKVstMV0gICAgICAgICMgIjEiIG9yICJ5ZXMiCgpuID0gbnAuYXJyYXkoWyh2YXJpYW50ID09IGEpLnN1bSgpIGZvciBhIGluIGFybXNdLCBkdHlwZT1mbG9hdCkKY29udiA9IG5wLmFycmF5KFsoKHZhcmlhbnQgPT0gYSkgJiAoY29udmVydGVkID09IHBvc2l0aXZlKSkuc3VtKCkKICAgICAgICAgICAgICAgICBmb3IgYSBpbiBhcm1zXSwgZHR5cGU9ZmxvYXQpCnJhdGUgPSBjb252IC8gbgoKIyAtLS0tIHNhbXBsZSByYXRpbyBjaGVjazogZG8gdGhpcyBCRUZPUkUgdHJ1c3RpbmcgYW55dGhpbmcgZWxzZSAtLS0tLS0tLS0tCl8sIHBfc3JtID0gc3RhdHMuY2hpc3F1YXJlKG4pCgojIC0tLS0gdHdvLXByb3BvcnRpb24geiB0ZXN0IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpwb29sID0gY29udi5zdW0oKSAvIG4uc3VtKCkKc2VfcG9vbCA9IG5wLnNxcnQocG9vbCAqICgxIC0gcG9vbCkgKiAoMSAvIG5bMF0gKyAxIC8gblsxXSkpCnogPSAocmF0ZVsxXSAtIHJhdGVbMF0pIC8gc2VfcG9vbApwID0gMiAqICgxIC0gc3RhdHMubm9ybS5jZGYoYWJzKHopKSkKCnNlX3VucG9vbGVkID0gbnAuc3FydChyYXRlWzBdICogKDEgLSByYXRlWzBdKSAvIG5bMF0KICAgICAgICAgICAgICAgICAgICAgICsgcmF0ZVsxXSAqICgxIC0gcmF0ZVsxXSkgLyBuWzFdKQpkaWZmID0gcmF0ZVsxXSAtIHJhdGVbMF0KbG8sIGhpID0gZGlmZiAtIDEuOTYgKiBzZV91bnBvb2xlZCwgZGlmZiArIDEuOTYgKiBzZV91bnBvb2xlZAoKcHJpbnQoIkEvQiBURVNUIFJFU1VMVCIpCnByaW50KCI9IiAqIDQ4KQpwcmludCgiICBzYW1wbGUgcmF0aW8gY2hlY2s6IHAgPSB7Oi4zZn0gIHt9Ii5mb3JtYXQoCiAgICBwX3NybSwgIk9LIiBpZiBwX3NybSA+IDAuMDEgZWxzZSAiQlJPS0VOIC0gc3RvcCBoZXJlIikpCnByaW50KCIiKQpmb3IgYXJtLCByLCBuaSBpbiB6aXAoYXJtcywgcmF0ZSwgbik6CiAgICBwcmludCgiICBhcm0ge306IHs6LjQlfSAgIChuID0gezosfSkiLmZvcm1hdChhcm0sIHIsIGludChuaSkpKQpwcmludCgiIikKcHJpbnQoIiAgYWJzb2x1dGUgbGlmdCB7OisuNCV9Ii5mb3JtYXQoZGlmZikpCnByaW50KCIgIDk1JSBDSSAgICAgICAgW3s6Ky40JX0sIHs6Ky40JX1dIi5mb3JtYXQobG8sIGhpKSkKcHJpbnQoIiAgcmVsYXRpdmUgbGlmdCB7OisuMiV9Ii5mb3JtYXQoZGlmZiAvIHJhdGVbMF0pKQpwcmludCgiICB6ID0gezouM2Z9LCAgcCA9IHs6LjZmfSIuZm9ybWF0KHosIHApKQpwcmludCgiIikKcHJpbnQoIiAgIiArICgiUkVKRUNUIHRoZSBudWxsOiB0aGUgdHdvIGFybXMgZGlmZmVyLiIKICAgICAgICAgICAgICBpZiBwIDwgMC4wNSBlbHNlICJDYW5ub3QgcmVqZWN0IHRoZSBudWxsLiIpKQpwcmludCgiIikKcHJpbnQoIiAgTm93IGNoZWNrIHRoZSBzYW1lIHNwbGl0IGJ5IGRldmljZSAoTW9zYWljIERpc3BsYXkpLiIpCnByaW50KCIgIERvZXMgdGhlIGxpZnQgaG9sZCBpbiBCT1RIIGRldmljZXMsIG9yIGlzIGl0IFNpbXBzb24ncyBwYXJhZG94PyIpCgpvdXRfZGF0YSA9IGluX2RhdGEKcQlYCAAAAGZpbGVuYW1lcQpOdWFYCgAAAHNjcmlwdFRleHRxC2gJWA0AAABzcGxpdHRlclN0YXRlcQxOWA4AAAB2aW1Nb2RlRW5hYmxlZHENiVgSAAAAY29udHJvbEFyZWFWaXNpYmxlcQ6IWBMAAABzYXZlZFdpZGdldEdlb21ldHJ5cQ9OdS4=</properties>
+		<properties node_id="5" format="literal">{}</properties>
 		<properties node_id="6" format="literal">{}</properties>
+		<properties node_id="7" format="literal">{}</properties>
+		<properties node_id="8" format="pickle">gAJ9cQAoWAsAAABfX3ZlcnNpb25fX3EBSwJYEgAAAGN1cnJlbnRTY3JpcHRJbmRleHECSwBYDQAAAHNjcmlwdExpYnJhcnlxA11xBH1xBShYBAAAAG5hbWVxBlgIAAAAQS9CIHRlc3RxB1gGAAAAc2NyaXB0cQhYiBwAACMgV2VlayA0IOKAlCB0aGUgZm9ybWFsIHRlc3RzIE9yYW5nZSBkb2VzIG5vdCBkbyBmb3IgeW91LgojCiMgVGhpcyBzY3JpcHQgaXMgZW1iZWRkZWQgaW50byB0aGUgUHl0aG9uIFNjcmlwdCB3aWRnZXQgb2YKIyB3ZWVrMDRfaW5mZXJlbmNlLm93cy4gSXQgYWxzbyBydW5zIHN0YW5kYWxvbmU6CiMKIyAgICAgcHl0aG9uIHNjcmlwdHMvYWJfdGVzdC5weQojCiMgSXQgbWlycm9ycyBzZWN0aW9ucyA2IGFuZCA3IG9mIG5vdGVib29rcy93ZWVrMDRfaW5mZXJlbmNlLmlweW5iOiB0aGUKIyBzYW1wbGUtcmF0aW8gY2hlY2ssIHRoZSBwcmltYXJ5IHR3by1wcm9wb3J0aW9uIHRlc3Qgd2l0aCBhbiBpbnRlcnZhbCwgdGhlCiMgc2FtcGxlIHNpemUgdGhhdCB3YXMgYWN0dWFsbHkgcmVxdWlyZWQsIGFuZCB0aGUgcGVyLWRldmljZSBzZWdtZW50IHRlc3RzCiMgd2l0aCBhIG11bHRpcGxpY2l0eSBjb3JyZWN0aW9uLgojCiMgSW5zaWRlIE9yYW5nZSwgYGluX2RhdGFgIGlzIHN1cHBsaWVkIGJ5IHRoZSB3aWRnZXQuIFN0YW5kYWxvbmUsIHdlIGxvYWQgdGhlCiMgdGFibGUgb3Vyc2VsdmVzLgppbXBvcnQgbnVtcHkgYXMgbnAKZnJvbSBzY2lweSBpbXBvcnQgc3RhdHMKZnJvbSBPcmFuZ2UuZGF0YSBpbXBvcnQgVGFibGUKCnRyeToKICAgIGluX2RhdGEgICAgICAgICAgIyBwcm92aWRlZCBieSB0aGUgUHl0aG9uIFNjcmlwdCB3aWRnZXQKZXhjZXB0IE5hbWVFcnJvcjogICAgIyBydW5uaW5nIHN0YW5kYWxvbmUKICAgIGZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aAogICAgaW5fZGF0YSA9IFRhYmxlKHN0cihQYXRoKF9fZmlsZV9fKS5wYXJlbnQucGFyZW50LnBhcmVudCAvICJkYXRhIiAvICJhYl90ZXN0LnRhYiIpKQoKVkFSSUFOVCA9ICJ2YXJpYW50IgpUQVJHRVQgPSAiY29udmVydGVkIgpTRUdNRU5UID0gImRldmljZSIKCgpkZWYgY29sdW1uKHRhYmxlLCBuYW1lKToKICAgICIiIlJldHVybiBhIGNvbHVtbiBieSBuYW1lIGFzIGEgbGlzdCBvZiBzdHJpbmdzLCB3aGVyZXZlciBpdCBsaXZlcy4iIiIKICAgIGRvbWFpbiA9IHRhYmxlLmRvbWFpbgogICAgZm9yIHNvdXJjZSwgdmFyX2xpc3QgaW4gKCh0YWJsZS5YLCBkb21haW4uYXR0cmlidXRlcyksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHRhYmxlLlkucmVzaGFwZSgtMSwgMSksIFtkb21haW4uY2xhc3NfdmFyXSksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHRhYmxlLm1ldGFzLCBkb21haW4ubWV0YXMpKToKICAgICAgICBmb3IgaSwgdmFyIGluIGVudW1lcmF0ZSh2YXJfbGlzdCk6CiAgICAgICAgICAgIGlmIHZhciBpcyBub3QgTm9uZSBhbmQgdmFyLm5hbWUgPT0gbmFtZToKICAgICAgICAgICAgICAgIGNvbCA9IHNvdXJjZVs6LCBpXQogICAgICAgICAgICAgICAgaWYgdmFyLmlzX2Rpc2NyZXRlOgogICAgICAgICAgICAgICAgICAgIHJldHVybiBbdmFyLnZhbHVlc1tpbnQodildIGZvciB2IGluIGNvbF0KICAgICAgICAgICAgICAgIHJldHVybiBjb2wKICAgIHJhaXNlIEtleUVycm9yKG5hbWUpCgoKZGVmIHR3b19wcm9wb3J0aW9uKGNvbnYsIG4pOgogICAgIiIiKGRpZmYsIGxvLCBoaSwgeiwgcCkgZm9yIGEgdHdvLXByb3BvcnRpb24gei10ZXN0LiBjb252L24gYXJlIGxlbmd0aCAyLiIiIgogICAgcmF0ZSA9IGNvbnYgLyBuCiAgICBwb29sID0gY29udi5zdW0oKSAvIG4uc3VtKCkKICAgIHNlX3Bvb2wgPSBucC5zcXJ0KHBvb2wgKiAoMSAtIHBvb2wpICogKDEgLyBuWzBdICsgMSAvIG5bMV0pKQogICAgeiA9IChyYXRlWzFdIC0gcmF0ZVswXSkgLyBzZV9wb29sCiAgICBwID0gMiAqICgxIC0gc3RhdHMubm9ybS5jZGYoYWJzKHopKSkKICAgIHNlX3VucG9vbGVkID0gbnAuc3FydChyYXRlWzBdICogKDEgLSByYXRlWzBdKSAvIG5bMF0KICAgICAgICAgICAgICAgICAgICAgICAgICArIHJhdGVbMV0gKiAoMSAtIHJhdGVbMV0pIC8gblsxXSkKICAgIGRpZmYgPSByYXRlWzFdIC0gcmF0ZVswXQogICAgcmV0dXJuIGRpZmYsIGRpZmYgLSAxLjk2ICogc2VfdW5wb29sZWQsIGRpZmYgKyAxLjk2ICogc2VfdW5wb29sZWQsIHosIHAKCgpkZWYgaG9sbShwdmFscyk6CiAgICAiIiJIb2xtIHN0ZXAtZG93biBhZGp1c3RlZCBwLXZhbHVlcy4gRG9taW5hdGVzIEJvbmZlcnJvbmk7IHByZWZlciBpdC4iIiIKICAgIHAgPSBucC5hc2FycmF5KHB2YWxzLCBkdHlwZT1mbG9hdCkKICAgIG0gPSBsZW4ocCkKICAgIG9yZGVyID0gbnAuYXJnc29ydChwKQogICAgYWRqID0gbnAuZW1wdHkobSkKICAgIHJ1biA9IDAuMAogICAgZm9yIGksIGlkeCBpbiBlbnVtZXJhdGUob3JkZXIpOgogICAgICAgIHJ1biA9IG1heChydW4sIChtIC0gaSkgKiBwW2lkeF0pCiAgICAgICAgYWRqW2lkeF0gPSBtaW4ocnVuLCAxLjApCiAgICByZXR1cm4gYWRqCgoKZGVmIG5fcGVyX2FybShwMSwgcmVsX21kZSwgYWxwaGE9MC4wNSwgcG93ZXI9MC44MCk6CiAgICAiIiJTYW1wbGUgc2l6ZSBQRVIgQVJNIHRvIGRldGVjdCBhIHJlbGF0aXZlIGxpZnQsIHZpYSBDb2hlbidzIGguCgogICAgVHdvIGFybXMgb2YgbiBlYWNoIGdpdmUgdmFyKGhfaGF0KSA9IDIvbiwgaGVuY2UgdGhlIGxlYWRpbmcgMi4gT21pdHRpbmcgaXQKICAgIGlzIHRoZSBjbGFzc2ljIHNsaXA6IGl0IHVuZGVyLW9yZGVycyB0aGUgc2FtcGxlIGJ5IGhhbGYsIGFuZCB0aGUgcmVzdWx0aW5nCiAgICBleHBlcmltZW50IGhhcyBhYm91dCA1MCUgcG93ZXIgd2hpbGUgaXRzIGRlc2lnbmVyIGJlbGlldmVzIGl0IGhhcyA4MCUuCiAgICAiIiIKICAgIHAyID0gcDEgKiAoMSArIHJlbF9tZGUpCiAgICBoID0gYWJzKDIgKiBucC5hcmNzaW4obnAuc3FydChwMikpIC0gMiAqIG5wLmFyY3NpbihucC5zcXJ0KHAxKSkpCiAgICB6X2EgPSBzdGF0cy5ub3JtLnBwZigxIC0gYWxwaGEgLyAyKQogICAgel9iID0gc3RhdHMubm9ybS5wcGYocG93ZXIpCiAgICByZXR1cm4gaW50KG5wLmNlaWwoMiAqICgoel9hICsgel9iKSAvIGgpICoqIDIpKQoKCnZhcmlhbnQgPSBucC5hcnJheShjb2x1bW4oaW5fZGF0YSwgVkFSSUFOVCkpCmNvbnZlcnRlZCA9IG5wLmFycmF5KGNvbHVtbihpbl9kYXRhLCBUQVJHRVQpKQpkZXZpY2UgPSBucC5hcnJheShjb2x1bW4oaW5fZGF0YSwgU0VHTUVOVCkpCgphcm1zID0gc29ydGVkKHNldCh2YXJpYW50KSkKcG9zaXRpdmUgPSBzb3J0ZWQoc2V0KGNvbnZlcnRlZCkpWy0xXSAgICAgICAgIyAiMSIgb3IgInllcyIKCm4gPSBucC5hcnJheShbKHZhcmlhbnQgPT0gYSkuc3VtKCkgZm9yIGEgaW4gYXJtc10sIGR0eXBlPWZsb2F0KQpjb252ID0gbnAuYXJyYXkoWygodmFyaWFudCA9PSBhKSAmIChjb252ZXJ0ZWQgPT0gcG9zaXRpdmUpKS5zdW0oKQogICAgICAgICAgICAgICAgIGZvciBhIGluIGFybXNdLCBkdHlwZT1mbG9hdCkKcmF0ZSA9IGNvbnYgLyBuCgojIC0tLS0gc3RlcCAwOiBzYW1wbGUgcmF0aW8gY2hlY2sgLS0gZG8gdGhpcyBCRUZPUkUgdHJ1c3RpbmcgYW55dGhpbmcgZWxzZSAtLQpfLCBwX3NybSA9IHN0YXRzLmNoaXNxdWFyZShuKQoKcHJpbnQoIkEvQiBURVNUIFJFU1VMVCIpCnByaW50KCI9IiAqIDU4KQpwcmludCgiICBzYW1wbGUgcmF0aW8gY2hlY2s6IHAgPSB7Oi4zZn0gIHt9Ii5mb3JtYXQoCiAgICBwX3NybSwgIk9LIiBpZiBwX3NybSA+IDAuMDEgZWxzZSAiQlJPS0VOIC0gc3RvcCBoZXJlIikpCmlmIHBfc3JtIDw9IDAuMDE6CiAgICBwcmludCgiIikKICAgIHByaW50KCIgIFJhbmRvbWlzYXRpb24gb3IgbG9nZ2luZyBpcyBicm9rZW4uIE5vdGhpbmcgYmVsb3cgaXMiKQogICAgcHJpbnQoIiAgaW50ZXJwcmV0YWJsZS4gRml4IHRoZSBhc3NpZ25tZW50IG1lY2hhbmlzbSBhbmQgcmVydW4uIikKCiMgLS0tLSBzdGVwIDE6IHRoZSBwcmltYXJ5IG1ldHJpYyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpkaWZmLCBsbywgaGksIHosIHAgPSB0d29fcHJvcG9ydGlvbihjb252LCBuKQoKcHJpbnQoIiIpCmZvciBhcm0sIHIsIG5pIGluIHppcChhcm1zLCByYXRlLCBuKToKICAgIHByaW50KCIgIGFybSB7fTogezouNCV9ICAgKG4gPSB7Oix9KSIuZm9ybWF0KGFybSwgciwgaW50KG5pKSkpCnByaW50KCIiKQpwcmludCgiICBhYnNvbHV0ZSBsaWZ0IHs6Ky40JX0iLmZvcm1hdChkaWZmKSkKcHJpbnQoIiAgOTUlIENJICAgICAgICBbezorLjQlfSwgezorLjQlfV0iLmZvcm1hdChsbywgaGkpKQpwcmludCgiICByZWxhdGl2ZSBsaWZ0IHs6Ky4yJX0iLmZvcm1hdChkaWZmIC8gcmF0ZVswXSkpCnByaW50KCIgIHogPSB7Oi4zZn0sICBwID0gezouNmZ9Ii5mb3JtYXQoeiwgcCkpCnByaW50KCIiKQpwcmludCgiICAiICsgKCJSRUpFQ1QgdGhlIG51bGw6IHRoZSB0d28gYXJtcyBkaWZmZXIuIgogICAgICAgICAgICAgIGlmIHAgPCAwLjA1IGVsc2UgIkNhbm5vdCByZWplY3QgdGhlIG51bGwuIikpCnByaW50KCIiKQpwcmludCgiICBSZXBvcnQgdGhlIGludGVydmFsLCBub3QgdGhlIHZlcmRpY3QuICcrMC43MiBwcCwgOTUlIENJIikKcHJpbnQoIiAgWyswLjQxLCArMS4wM10nIGlzIGFjdGlvbmFibGU7ICdwIDwgMC4wMDEnIGlzIG5vdC4iKQoKIyAtLS0tIHN0ZXAgMjogd2FzIHRoZSB0ZXN0IGJpZyBlbm91Z2g/IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCnByaW50KCIiKQpwcmludCgiU0FNUExFIFNJWkUgUkVRVUlSRUQgKDgwJSBwb3dlciwgYWxwaGEgPSAwLjA1KSIpCnByaW50KCItIiAqIDU4KQpmb3IgbWRlIGluICgwLjA1LCAwLjEwLCAwLjEyLCAwLjIwKToKICAgIG5lZWQgPSBuX3Blcl9hcm0ocmF0ZVswXSwgbWRlKQogICAgcHJpbnQoIiAgezo+NC4wJX0gcmVsYXRpdmUgbGlmdDogezo+OSx9IHBlciBhcm0gICAoaGF2ZSB7Oix9KSAge30iLmZvcm1hdCgKICAgICAgICBtZGUsIG5lZWQsIGludChuWzBdKSwKICAgICAgICAiT0siIGlmIG5bMF0gPj0gbmVlZCBlbHNlICJVTkRFUlBPV0VSRUQiKSkKCiMgLS0tLSBzdGVwIDM6IHNlZ21lbnRzLCB3aXRoIHRoZSBtdWx0aXBsaWNpdHkgY29ycmVjdGlvbiAtLS0tLS0tLS0tLS0tLS0tLQpzZWdtZW50cyA9IHNvcnRlZChzZXQoZGV2aWNlKSkKcm93cywgcHZhbHMgPSBbXSwgW10KZm9yIHNlZyBpbiBzZWdtZW50czoKICAgIG1hc2sgPSBkZXZpY2UgPT0gc2VnCiAgICBuX3MgPSBucC5hcnJheShbKG1hc2sgJiAodmFyaWFudCA9PSBhKSkuc3VtKCkgZm9yIGEgaW4gYXJtc10sIGR0eXBlPWZsb2F0KQogICAgY19zID0gbnAuYXJyYXkoWyhtYXNrICYgKHZhcmlhbnQgPT0gYSkgJiAoY29udmVydGVkID09IHBvc2l0aXZlKSkuc3VtKCkKICAgICAgICAgICAgICAgICAgICBmb3IgYSBpbiBhcm1zXSwgZHR5cGU9ZmxvYXQpCiAgICBkX3MsIGxvX3MsIGhpX3MsIHpfcywgcF9zID0gdHdvX3Byb3BvcnRpb24oY19zLCBuX3MpCiAgICByb3dzLmFwcGVuZCgoc2VnLCBpbnQobl9zLnN1bSgpKSwgY19zWzBdIC8gbl9zWzBdLCBjX3NbMV0gLyBuX3NbMV0sCiAgICAgICAgICAgICAgICAgZF9zLCBsb19zLCBoaV9zLCB6X3MsIHBfcykpCiAgICBwdmFscy5hcHBlbmQocF9zKQoKYWRqID0gaG9sbShwdmFscykKCnByaW50KCIiKQpwcmludCgiQlkgU0VHTUVOVCAoe30pLCBIb2xtLWNvcnJlY3RlZCBmb3Ige30gdGVzdHMiLmZvcm1hdCgKICAgIFNFR01FTlQsIGxlbihzZWdtZW50cykpKQpwcmludCgiLSIgKiA1OCkKcHJpbnQoIiAgezo8OX17Oj44fXs6Pjl9ezo+OX17Oj4xMH17Oj4xMX17Oj45fSIuZm9ybWF0KAogICAgInNlZ21lbnQiLCAibiIsICJyYXRlIEEiLCAicmF0ZSBCIiwgImxpZnQiLCAicmF3IHAiLCAiSG9sbSBwIikpCmZvciAoc2VnLCBuX3MsIHJhLCByYiwgZF9zLCBsb19zLCBoaV9zLCB6X3MsIHBfcyksIGFfcCBpbiB6aXAocm93cywgYWRqKToKICAgIHByaW50KCIgIHs6PDl9ezo+OCx9ezo+OS4yJX17Oj45LjIlfXs6PisxMC4yJX17Oj4xMS41Zn17Oj45LjVmfXt9Ii5mb3JtYXQoCiAgICAgICAgc2VnLCBuX3MsIHJhLCByYiwgZF9zLCBwX3MsIGFfcCwgIiAgKiIgaWYgYV9wIDwgMC4wNSBlbHNlICIiKSkKCnByaW50KCIiKQpwcmludCgiICA5NSUgQ0kgcGVyIHNlZ21lbnQ6IikKZm9yIHNlZywgbl9zLCByYSwgcmIsIGRfcywgbG9fcywgaGlfcywgel9zLCBwX3MgaW4gcm93czoKICAgIHByaW50KCIgICAgezo8OX0gezorLjIlfSAgW3s6Ky4yJX0sIHs6Ky4yJX1dIi5mb3JtYXQoc2VnLCBkX3MsIGxvX3MsIGhpX3MpKQoKIyAtLS0tIHdoYXQgdG8gY29uY2x1ZGUsIGFuZCB3aGF0IE5PVCB0byBjYWxsIGl0IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCmJhbGFuY2UgPSBucC5hcnJheShbWyhtYXNrX2EgJiAoZGV2aWNlID09IHMpKS5zdW0oKSBmb3IgcyBpbiBzZWdtZW50c10KICAgICAgICAgICAgICAgICAgICBmb3IgbWFza19hIGluIFt2YXJpYW50ID09IGEgZm9yIGEgaW4gYXJtc11dLCBkdHlwZT1mbG9hdCkKXywgcF9iYWxhbmNlLCBfLCBfID0gc3RhdHMuY2hpMl9jb250aW5nZW5jeShiYWxhbmNlKQoKcHJpbnQoIiIpCnByaW50KCJJTlRFUlBSRVRBVElPTiIpCnByaW50KCItIiAqIDU4KQpwcmludCgiICB7fSBiYWxhbmNlIGFjcm9zcyBhcm1zOiBjaGkyIHAgPSB7Oi4zZn0iLmZvcm1hdChTRUdNRU5ULCBwX2JhbGFuY2UpKQpwcmludCgiICBUaGUgYXJtcyBoYXZlIHRoZSBzYW1lIGRldmljZSBtaXgsIHNvIGRldmljZSBpcyBOT1QgYSBjb25mb3VuZGVyLCIpCnByaW50KCIgIGFuZCBhIHZhcmlhYmxlIHRoYXQgaXMgbm90IGEgY29uZm91bmRlciBjYW5ub3QgcmV2ZXJzZSBhbnl0aGluZy4iKQpwcmludCgiIikKcHJpbnQoIiAgV2hhdCB5b3UgYXJlIGxvb2tpbmcgYXQgaXMgRUZGRUNUIEhFVEVST0dFTkVJVFksIG5vdCBTaW1wc29uJ3MiKQpwcmludCgiICBwYXJhZG94OiB0aGUgbGlmdCBob2xkcyBpbiBzaWduIGV2ZXJ5d2hlcmUgYnV0IGRpZmZlcnMgaHVnZWx5IGluIikKcHJpbnQoIiAgc2l6ZS4gU2ltcHNvbidzIHBhcmFkb3ggcmVxdWlyZXMgdGhlIGFnZ3JlZ2F0ZSBjb25jbHVzaW9uIHRvIEZMSVAiKQpwcmludCgiICB3aGVuIHlvdSBjb25kaXRpb24sIGFuZCBoZXJlIGl0IGRvZXMgbm90LiBVc2UgdGhlIHJpZ2h0IG5hbWUuIikKcHJpbnQoIiIpCnByaW50KCIgIE5vdGUgYWxzbyB0aGF0IHRoZXNlIHNlZ21lbnQgdGVzdHMgd2VyZSBub3QgZnJlZTogdGhleSBhcmUgZXh0cmEiKQpwcmludCgiICBoeXBvdGhlc2VzLCB3aGljaCBpcyB3aHkgdGhlIEhvbG0gY29sdW1uIGV4aXN0cy4gTm90ZWJvb2sgc2VjdGlvbiA2IikKcHJpbnQoIiAgcnVucyB0ZW4gb2YgdGhlbSBhbmQgc2hvd3Mgd2hhdCBoYXBwZW5zIHdoZW4geW91IGRvIG5vdCBjb3JyZWN0LiIpCgpvdXRfZGF0YSA9IGluX2RhdGEKcQlYCAAAAGZpbGVuYW1lcQpOdWFYCgAAAHNjcmlwdFRleHRxC2gJWA0AAABzcGxpdHRlclN0YXRlcQxOWA4AAAB2aW1Nb2RlRW5hYmxlZHENiVgSAAAAY29udHJvbEFyZWFWaXNpYmxlcQ6IWBMAAABzYXZlZFdpZGdldEdlb21ldHJ5cQ9OdS4=</properties>
+		<properties node_id="9" format="literal">{}</properties>
 	</node_properties>
 </scheme>
